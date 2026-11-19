@@ -1,0 +1,6 @@
+{
+  "name": "Hilal Tesisat",
+  "description": "Ankara Pursaklar merkezli profesyonel doğalgaz, kombi bakımı, petek temizliği, su arıtma ve sıhhi tesisat çözümleri.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

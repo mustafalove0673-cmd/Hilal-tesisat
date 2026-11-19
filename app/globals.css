@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+:root {
+  --bg-pearl: #efece9;
+  --bg-surface: #f7f5f3;
+  --bg-card: rgba(255, 255, 255, 0.72);
+  --burgundy-950: #1d0407;
+  --burgundy-900: #36080d;
+  --burgundy-800: #4d0d14;
+  --burgundy-700: #6e1620;
+  --champagne-400: #c8a287;
+  --ink-900: #1b1817;
+  --ink-600: #5a5350;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--bg-pearl);
+    color: var(--ink-900);
+  }
+
+  body {
+    font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-pearl);
+    color: var(--ink-900);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display), Georgia, serif;
+  }
+}
+
+.pearl-glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.82) 0%,
+    rgba(244, 240, 237, 0.68) 100%
+  );
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 20px 50px -24px rgba(54, 8, 13, 0.16);
+}
+
+.burgundy-cta {
+  background: linear-gradient(135deg, #5e1119 0%, #38080d 60%, #230407 100%);
+  box-shadow: 0 14px 30px -10px rgba(74, 13, 19, 0.45);
+}
+
+.burgundy-cta:hover {
+  background: linear-gradient(135deg, #71151f 0%, #460b11 60%, #2c060a 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
