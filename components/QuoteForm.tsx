@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Lock, AlertCircle } from 'lucide-react';
-import { SERVICES, SITE_INFO } from '@/lib/site-data';
+import { buildWhatsappHref, SERVICES, SITE_INFO } from '@/lib/site-data';
 import { validateQuotePayload } from '@/lib/security';
 
 interface QuoteFormProps {
@@ -139,7 +139,7 @@ export function QuoteForm({ defaultServiceSlug = 'kombi-bakimi' }: QuoteFormProp
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="pearl-glass rounded-3xl p-6 sm:p-8 lg:p-10 space-y-5"
+      className="pearl-glass w-full h-full rounded-3xl p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-5"
     >
       <div className="flex items-center justify-between gap-4 border-b border-[#DED6D0] pb-4">
         <div>
@@ -326,17 +326,34 @@ export function QuoteForm({ defaultServiceSlug = 'kombi-bakimi' }: QuoteFormProp
         ) : null}
       </div>
 
-      <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-full burgundy-cta px-8 py-3.5 text-sm font-medium text-white transition-transform active:scale-[0.98] disabled:opacity-60"
-        >
-          <span>{submitting ? 'Gönderiliyor...' : 'Güvenli Teklif Talebi Gönder'}</span>
-          <ArrowRight className="w-4 h-4" aria-hidden="true" />
-        </button>
-        <span className="text-xs text-[#6B635F]">
-          Acil durumlarda 7/24: <strong className="text-[#36080D] tabular-nums">{SITE_INFO.phoneDisplay}</strong>
+      <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full burgundy-cta px-6 py-3 text-sm font-medium text-white whitespace-nowrap transition-transform active:scale-[0.98] disabled:opacity-60"
+          >
+            <span>{submitting ? 'Gönderiliyor...' : 'Güvenli Teklif Talebi Gönder'}</span>
+            <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />
+          </button>
+
+          <a
+            href={buildWhatsappHref()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full border border-[#1C5D36]/30 bg-white px-4.5 py-3 text-xs sm:text-sm font-semibold text-[#1C5D36] hover:bg-[#1C5D36] hover:text-white whitespace-nowrap transition-colors"
+          >
+            <span>WhatsApp’tan Yaz</span>
+          </a>
+        </div>
+        <span className="text-xs text-[#6B635F] text-center sm:text-right whitespace-nowrap shrink-0">
+          Acil 7/24:{' '}
+          <a
+            href={SITE_INFO.phoneHref}
+            className="font-semibold text-[#36080D] tabular-nums whitespace-nowrap hover:underline"
+          >
+            {SITE_INFO.phoneDisplay}
+          </a>
         </span>
       </div>
     </form>

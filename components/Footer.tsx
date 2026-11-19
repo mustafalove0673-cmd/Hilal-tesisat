@@ -2,14 +2,35 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Mail, MapPin, Phone } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { ArrowRight, CheckCircle2, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { HilalLogo } from './HilalLogo';
-import { SITE_INFO } from '@/lib/site-data';
+import { buildWhatsappHref, SITE_INFO } from '@/lib/site-data';
+
+const QUICK_SECTIONS = [
+  { id: 'hero', href: '/#hero', label: 'Ana Sayfa' },
+  { id: 'hizmetler', href: '/#hizmetler', label: 'Hizmetler' },
+  { id: 'projelerimiz', href: '/#projelerimiz', label: 'Projelerimiz' },
+  { id: 'kurumsal', href: '/#kurumsal', label: 'Kurumsal' },
+  { id: 'sss', href: '/#sss', label: 'SSS' },
+  { id: 'iletisim', href: '/#iletisim', label: 'İletişim' },
+];
 
 export function Footer() {
+  const pathname = usePathname();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [feedback, setFeedback] = useState('');
+
+  function handleSectionNav(e: React.MouseEvent<HTMLAnchorElement>, id: string) {
+    if (pathname === '/') {
+      const target = document.getElementById(id);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }
 
   async function handleNewsletterSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -52,9 +73,10 @@ export function Footer() {
       >
         <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full h-full">
           <defs>
-            <linearGradient id="footerWaveRight" x1="0" y1="0" x2="1" y2="0.2">
-              <stop offset="0%" stopColor="#3B080D" stopOpacity="0.08" />
-              <stop offset="32%" stopColor="#5D1119" stopOpacity="0.92" />
+            <linearGradient id="footerWaveRight" x1="0" y1="0" x2="1" y2="0.15">
+              <stop offset="0%" stopColor="#EBE7E4" stopOpacity="0" />
+              <stop offset="18%" stopColor="#4A0D13" stopOpacity="0.65" />
+              <stop offset="48%" stopColor="#5D1119" stopOpacity="0.94" />
               <stop offset="100%" stopColor="#260508" stopOpacity="0.98" />
             </linearGradient>
           </defs>
@@ -76,7 +98,11 @@ export function Footer() {
         <div className="grid grid-cols-2 lg:grid-cols-12 gap-6 sm:gap-10">
           {/* Column 1: Brand */}
           <div className="col-span-2 lg:col-span-4 space-y-2.5 sm:space-y-4">
-            <Link href="/" className="inline-block scale-90 sm:scale-100 origin-left">
+            <Link
+              href="/#hero"
+              onClick={(e) => handleSectionNav(e, 'hero')}
+              className="inline-block scale-90 sm:scale-100 origin-left"
+            >
               <HilalLogo variant="dark" showTagline />
             </Link>
             <p className="text-[11px] sm:text-sm leading-relaxed text-[#57504D] max-w-xs">
@@ -85,42 +111,23 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Column 2: Quick Links */}
+          {/* Column 2: Quick Links (Single-Page Sections) */}
           <div className="col-span-1 lg:col-span-2">
             <h3 className="font-display text-base sm:text-lg font-semibold text-[#23191A] mb-2.5 sm:mb-4">
               Hızlı Erişim
             </h3>
             <ul className="space-y-1.5 sm:space-y-2.5 text-xs sm:text-sm text-[#4D4644]">
-              <li>
-                <Link href="/" className="hover:text-[#4A0D13] transition-colors">
-                  Ana Sayfa
-                </Link>
-              </li>
-              <li>
-                <Link href="/hizmetler" className="hover:text-[#4A0D13] transition-colors">
-                  Hizmetler
-                </Link>
-              </li>
-              <li>
-                <Link href="/projelerimiz" className="hover:text-[#4A0D13] transition-colors">
-                  Projelerimiz
-                </Link>
-              </li>
-              <li>
-                <Link href="/kurumsal" className="hover:text-[#4A0D13] transition-colors">
-                  Hakkımızda
-                </Link>
-              </li>
-              <li>
-                <Link href="/sss" className="hover:text-[#4A0D13] transition-colors">
-                  SSS
-                </Link>
-              </li>
-              <li>
-                <Link href="/iletisim" className="hover:text-[#4A0D13] transition-colors">
-                  İletişim
-                </Link>
-              </li>
+              {QUICK_SECTIONS.map((item) => (
+                <li key={item.id}>
+                  <Link
+                    href={item.href}
+                    onClick={(e) => handleSectionNav(e, item.id)}
+                    className="hover:text-[#4A0D13] transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -139,6 +146,19 @@ export function Footer() {
                     <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
                   </span>
                   <span className="truncate">{SITE_INFO.phoneDisplay}</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={buildWhatsappHref()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 hover:text-[#1C5D36] transition-colors"
+                >
+                  <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#1C5D36]/12 text-[#1C5D36] shrink-0">
+                    <MessageCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
+                  </span>
+                  <span>WhatsApp 7/24 Hattı</span>
                 </a>
               </li>
               <li>
@@ -240,6 +260,16 @@ export function Footer() {
             >
               Çerez Politikası
             </Link>
+            {/* Moving Target Defense canary link ignored by real users & honest crawlers */}
+            <a
+              href="/api/trap?source=canary"
+              rel="nofollow"
+              aria-hidden="true"
+              tabIndex={-1}
+              className="sr-only"
+            >
+              Arşiv Dizin Node
+            </a>
           </div>
         </div>
       </div>

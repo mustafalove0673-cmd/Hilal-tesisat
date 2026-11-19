@@ -13,7 +13,7 @@ export function CookieConsent() {
     try {
       const saved = window.localStorage.getItem(STORAGE_KEY);
       if (!saved) {
-        const timer = window.setTimeout(() => setVisible(true), 1400);
+        const timer = window.setTimeout(() => setVisible(true), 10500);
         return () => window.clearTimeout(timer);
       }
     } catch {
@@ -38,12 +38,12 @@ export function CookieConsent() {
   return (
     <aside
       aria-label="Çerez Tercihleri"
-      className="fixed bottom-2.5 left-2.5 right-2.5 sm:left-auto sm:right-5 sm:bottom-5 sm:max-w-sm z-40 rounded-xl sm:rounded-2xl bg-[#230508]/95 text-[#F8F5F2] border border-[#C8A287]/35 px-3 py-2.5 sm:px-4 sm:py-3 shadow-2xl backdrop-blur-md"
+      className="fixed bottom-16 left-3 right-3 sm:right-auto sm:left-5 sm:bottom-5 sm:max-w-xs z-40 rounded-xl bg-[#230508]/95 text-[#F8F5F2] border border-[#C8A287]/35 px-3 py-2.5 shadow-2xl backdrop-blur-md"
     >
-      <div className="flex items-start gap-2.5">
+      <div className="flex items-start gap-2">
         <ShieldCheck className="w-3.5 h-3.5 text-[#C8A287] shrink-0 mt-0.5" aria-hidden="true" />
         <div className="flex-1 min-w-0">
-          <p className="text-[10.5px] sm:text-xs leading-snug text-[#E9DFD9]">
+          <p className="text-[10.5px] leading-snug text-[#E9DFD9]">
             Zorunlu güvenlik çerezleri kullanıyoruz.{' '}
             <Link href="/yasal/cerez-politikasi" className="underline text-white hover:text-[#C8A287]">
               Çerez Politikası
@@ -54,18 +54,18 @@ export function CookieConsent() {
             </Link>
             .
           </p>
-          <div className="mt-1.5 sm:mt-2 flex items-center gap-1.5 sm:gap-2">
+          <div className="mt-1.5 flex items-center gap-1.5">
             <button
               type="button"
               onClick={() => savePreference('all')}
-              className="px-2.5 py-1 rounded-full bg-[#F8F5F2] text-[#230508] text-[10px] sm:text-[11px] font-semibold hover:bg-[#EAE2DC] transition-colors whitespace-nowrap"
+              className="px-2.5 py-0.5 rounded-full bg-[#F8F5F2] text-[#230508] text-[10px] font-semibold hover:bg-[#EAE2DC] transition-colors whitespace-nowrap"
             >
               Kabul Et
             </button>
             <button
               type="button"
               onClick={() => savePreference('essential')}
-              className="px-2.5 py-1 rounded-full border border-white/25 text-[10px] sm:text-[11px] font-medium text-[#F8F5F2] hover:bg-white/10 transition-colors whitespace-nowrap"
+              className="px-2.5 py-0.5 rounded-full border border-white/25 text-[10px] font-medium text-[#F8F5F2] hover:bg-white/10 transition-colors whitespace-nowrap"
             >
               Yalnızca Zorunlu
             </button>

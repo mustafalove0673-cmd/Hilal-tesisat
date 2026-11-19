@@ -7,6 +7,8 @@ import {
   validateQuotePayload,
   validateNewsletterPayload,
   SlidingWindowRateLimiter,
+  evaluateRequestDeception,
+  buildMtdRedirectTarget,
 } from './security';
 import { buildLocalBusinessJsonLd, buildFaqJsonLd, buildBreadcrumbJsonLd } from './seo';
 
@@ -137,3 +139,53 @@ test('SEO JSON-LD generators emit valid structured schema', () => {
   ]);
   assert.equal(breadcrumb.itemListElement[1].position, 2);
 });
+
+test('MTD active deception traps cloners and probes while allowing real browsers and SEO crawlers', () => {
+  // Normal user browser allowed
+  assert.deepEqual(
+    evaluateRequestDeception(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/134.0.0.0 Safari/537.36',
+      '/',
+    ),
+    { action: 'allow' },
+  );
+
+  // Googlebot allowed on public routes for #1 SEO
+  assert.deepEqual(
+    evaluateRequestDeception(
+      'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+      '/',
+    ),
+    { action: 'allow' },
+  );
+
+  // Site cloner User-Agents misdirected to shifting MTD decoy
+  assert.deepEqual(evaluateRequestDeception('HTTrack 3.0x', '/'), {
+    action: 'mtd_redirect',
+    reason: 'cloner_ua',
+  });
+  assert.deepEqual(evaluateRequestDeception('python-requests/2.31.0', '/'), {
+    action: 'mtd_redirect',
+    reason: 'cloner_ua',
+  });
+
+  // Malicious recon probe paths trapped even if spoofing browser/crawler UA
+  assert.deepEqual(
+    evaluateRequestDeception(
+      'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+      '/.env',
+    ),
+    { action: 'mtd_redirect', reason: 'probe_path' },
+  );
+  assert.deepEqual(evaluateRequestDeception('Mozilla/5.0', '/wp-admin/install.php'), {
+    action: 'mtd_redirect',
+    reason: 'probe_path',
+  });
+
+  // Rotating MTD trap URL shifts across time buckets
+  const targetA = buildMtdRedirectTarget('/.env', 1000);
+  const targetB = buildMtdRedirectTarget('/.env', 15000);
+  assert.ok(targetA.startsWith('/api/trap?mtd='));
+  assert.notEqual(targetA, targetB);
+});
+

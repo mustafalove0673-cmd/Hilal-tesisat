@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { buildPageMetadata } from '@/lib/seo';
+import { SITE_IMAGES } from '@/lib/site-data';
 import { SubpageShell } from '@/components/SubpageShell';
 import { ProjectsGallery } from '@/components/ProjectsGallery';
 
@@ -17,6 +18,10 @@ export default function ProjelerimizPage() {
       eyebrow="Tamamlanan Referanslar"
       title="Gerçekleştirdiğimiz Özel Projeler"
       description="Konut, villa ve ticari yapılarda estetik, enerji tasarrufu ve yüksek mühendislik güvenliğini bir araya getiren seçkin uygulamalarımız."
+      heroImage={SITE_IMAGES.projectVillaExterior}
+      heroImageAlt="Hilal Tesisat Ankara Modern Villa Mekanik ve Doğalgaz Uygulaması"
+      heroMetricValue="1000+ Proje"
+      heroMetricLabel="40 Bar Basınç Testi Onaylı"
       breadcrumbs={[
         { name: 'Ana Sayfa', path: '/' },
         { name: 'Projelerimiz', path: '/projelerimiz' },

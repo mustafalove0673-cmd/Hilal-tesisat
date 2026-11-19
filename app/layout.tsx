@@ -6,6 +6,7 @@ import { MotionShell, ScrollProgressBar } from '@/components/MotionPrimitives';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { CookieConsent } from '@/components/CookieConsent';
+import { FloatingContactActions } from '@/components/FloatingContactActions';
 
 const displayFont = Cormorant_Garamond({
   subsets: ['latin', 'latin-ext'],
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex-1">{children}</main>
           <Footer />
           <CookieConsent />
+          <FloatingContactActions />
         </MotionShell>
       </body>
     </html>

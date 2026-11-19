@@ -4,6 +4,7 @@ export const SITE_INFO = {
   tagline: 'Güvenli Yaşam, Profesyonel Çözümler.',
   phoneDisplay: '+90 555 078 44 18',
   phoneHref: 'tel:+905550784418',
+  whatsappNumber: '905550784418',
   email: 'hilal.servicesss@gmail.com',
   addressLine1: 'Edebali Cd. 78, 06145',
   addressLine2: 'Pursaklar / Ankara',
@@ -26,18 +27,30 @@ export const SITE_INFO = {
   ],
 } as const;
 
+export function buildWhatsappHref(subject?: string): string {
+  const baseText = subject
+    ? `Merhaba Hilal Tesisat, ${subject} hakkında bilgi ve ücretsiz keşif randevusu almak istiyorum.`
+    : 'Merhaba Hilal Tesisat, tesisat hizmetleriniz hakkında bilgi ve fiyat teklifi almak istiyorum.';
+  return `https://wa.me/${SITE_INFO.whatsappNumber}?text=${encodeURIComponent(baseText)}`;
+}
+
 export const SITE_IMAGES = {
-  heroVilla: '/images/hero_villa_architecture_1795098583959.jpg',
-  pearlRibbonBg: '/images/bg_pearl_ribbon_1795098583589.jpg',
-  waterSplash: '/images/water_splash_crystal_1795098584819.jpg',
-  emblemMetal: '/images/emblem_crescent_metal_1795098583546.jpg',
+  heroVilla: '/images/hero_villa_grand_hilal.jpg',
+  pearlRibbonBg: '/images/bg_silk_vivid_1795101487490.jpg',
+  pearlSilkBackdrop: '/images/bg_silk_vivid_1795101487490.jpg',
+  bannerHeating: '/images/subpage_banner_heating_1795100948517.jpg',
+  bannerGas: '/images/subpage_banner_gas_engineering_1795100948428.jpg',
+  bannerWater: '/images/subpage_banner_water_luxury_1795100948526.jpg',
+  corporateTeam: '/images/subpage_corporate_team_1795100948395.jpg',
+  waterSplash: '/images/water_vivid_1795101487866.jpg',
+  emblemMetal: '/images/emblem_vivid_1795101488092.jpg',
   projectBoilerBathroom: '/images/project_boiler_bathroom_1795098584339.jpg',
   projectBathroomLuxury: '/images/project_bathroom_luxury_1795099756865.jpg',
   projectUnderfloorHeating: '/images/project_underfloor_heating_1795098583990.jpg',
   projectVillaExterior: '/images/project_villa_exterior_1795098584161.jpg',
   technicianPortrait: '/images/technician_rear_clean_1795099757031.jpg',
-  phoneOrbital: '/images/phone_orbital_rings_1795098583152.jpg',
-  serviceCombi: '/images/service_combi_boiler_1795098583968.jpg',
+  phoneOrbital: '/images/phone_vivid_1795101488427.jpg',
+  serviceCombi: '/images/service_boiler_vivid_1795101488015.jpg',
   serviceRadiator: '/images/service_radiator_panel_1795098583888.jpg',
   servicePurifier: '/images/service_water_purifier_1795098584188.jpg',
   servicePlumbing: '/images/service_plumbing_pipes_1795098583935.jpg',
@@ -51,6 +64,59 @@ export const SITE_IMAGES = {
 } as const;
 
 export type ServiceCategory = 'tumu' | 'isitma' | 'dogalgaz' | 'su-tesisat';
+
+export interface CategoryShowcase {
+  id: ServiceCategory;
+  label: string;
+  headline: string;
+  description: string;
+  image: string;
+  standardNote: string;
+  responseNote: string;
+}
+
+export const SERVICE_CATEGORY_SHOWCASES: Record<ServiceCategory, CategoryShowcase> = {
+  tumu: {
+    id: 'tumu',
+    label: 'Tüm Hizmetler',
+    headline: 'Ankara Geneli Uçtan Uca Mekanik & Tesisat Çözümleri',
+    description:
+      'Yoğuşmalı ısıtma sistemlerinden Başkentgaz onaylı doğalgaz mühendisliğine, içme suyu arıtmadan kameralı tıkanıklık açmaya kadar her aşamada garantili uygulama.',
+    image: SITE_IMAGES.bannerHeating,
+    standardNote: 'TSE & Başkentgaz Standartlı',
+    responseNote: 'Aynı Gün Ekip Yönlendirme',
+  },
+  isitma: {
+    id: 'isitma',
+    label: 'Isıtma Sistemleri',
+    headline: 'Yüksek Verimli Yoğuşmalı Kombi, Petek ve Yerden Isıtma',
+    description:
+      'Yakıt tasarrufunu artıran baca gazı kalibrasyonu, çift yönlü darbeli petek yıkama ve oksijen bariyerli PEX-a yerden ısıtma kurulumu.',
+    image: SITE_IMAGES.bannerHeating,
+    standardNote: '%25’e Varan Yakıt Tasarrufu',
+    responseNote: '1–2 Yıl Servis Garantisi',
+  },
+  dogalgaz: {
+    id: 'dogalgaz',
+    label: 'Doğalgaz Mühendislik',
+    headline: 'Yetkili ZetaCAD Proje Çizimi, Gaz Açımı ve Emniyet Kontrolü',
+    description:
+      'Daire, villa ve ticari mutfaklar için Başkentgaz mevzuatına %100 uygun proje onayı, sızdırmazlık testi ve acil kaçak müdahalesi.',
+    image: SITE_IMAGES.bannerGas,
+    standardNote: 'Yetkili Mühendis Onaylı',
+    responseNote: '30 Dk Acil Kaçak Ekibi',
+  },
+  'su-tesisat': {
+    id: 'su-tesisat',
+    label: 'Su & Sıhhi Tesisat',
+    headline: 'Kırmadan Akustik Kaçak Tespiti, Robotik Açma ve Su Arıtma',
+    description:
+      'Termal ve akustik dinleme ile noktasal kaçak onarımı, endoskopik kameralı gider temizliği ve ters ozmoz sağlıklı su çözümleri.',
+    image: SITE_IMAGES.bannerWater,
+    standardNote: 'Kırmadan Görüntülü Çözüm',
+    responseNote: '30–45 Dk Hızlı Müdahale',
+  },
+};
 
 export interface ServiceItem {
   slug: string;

@@ -185,3 +185,101 @@ export class SlidingWindowRateLimiter {
     };
   }
 }
+
+export const ALLOWED_SEO_BOT_RE =
+  /(googlebot|adsbot-google|mediapartners-google|google-inspectiontool|bingbot|slurp|duckduckbot|baiduspider|yandexbot|applebot|facebookexternalhit|twitterbot|linkedinbot|whatsapp)/i;
+
+export const SCRAPER_CLONER_UA_RE =
+  /(httrack|webcopier|teleport|offline explorer|sitesucker|wget\/|scrapy|curl\/|python-urllib|python-requests|aiohttp|go-http-client|libwww-perl|nikto|sqlmap|wpscan|nuclei|masscan|zgrab|dirbuster|gobuster|feroxbuster|ffuf|apachebench|havij|acunetix|webstripper|blackwidow|PageGrabber|WinHTTrack)/i;
+
+export const DECOY_PROBE_PATHS: readonly string[] = [
+  '/wp-admin',
+  '/wp-login',
+  '/wp-content',
+  '/wp-includes',
+  '/.env',
+  '/.git',
+  '/.svn',
+  '/.htaccess',
+  '/phpmyadmin',
+  '/pma',
+  '/adminer',
+  '/xmlrpc.php',
+  '/config.php',
+  '/shell.php',
+  '/backup',
+  '/dump.sql',
+  '/cgi-bin',
+  '/actuator',
+  '/server-status',
+  '/decoy-archive',
+];
+
+export interface DeceptionDecision {
+  action: 'allow' | 'mtd_redirect';
+  reason?: 'probe_path' | 'cloner_ua';
+}
+
+export function evaluateRequestDeception(
+  userAgent: string | null | undefined,
+  pathname: string,
+): DeceptionDecision {
+  const normalizedPath = pathname.toLowerCase();
+  const ua = (userAgent ?? '').trim();
+
+  // Never trap the trap endpoint itself or static framework assets
+  if (
+    normalizedPath.startsWith('/api/trap') ||
+    normalizedPath.startsWith('/_next/') ||
+    normalizedPath.startsWith('/images/') ||
+    normalizedPath.startsWith('/assets/')
+  ) {
+    return { action: 'allow' };
+  }
+
+  // Always trap vulnerability probes & clone-scanner paths (even if spoofing UA)
+  if (
+    DECOY_PROBE_PATHS.some(
+      (probe) =>
+        normalizedPath === probe ||
+        normalizedPath.startsWith(`${probe}/`) ||
+        normalizedPath.startsWith(`${probe}.`),
+    )
+  ) {
+    return { action: 'mtd_redirect', reason: 'probe_path' };
+  }
+
+  // Preserve search engine rankings (#1 Google/Bing/WhatsApp preview)
+  if (ua && ALLOWED_SEO_BOT_RE.test(ua)) {
+    return { action: 'allow' };
+  }
+
+  // Redirect known site cloners, offline copiers, and scraping agents to shifting MTD decoy
+  if (ua && SCRAPER_CLONER_UA_RE.test(ua)) {
+    return { action: 'mtd_redirect', reason: 'cloner_ua' };
+  }
+
+  return { action: 'allow' };
+}
+
+const DECOY_SLUGS = [
+  'legacy-index',
+  'mirror-shard-a',
+  'catalog-snapshot',
+  'static-vault',
+  'manifest-node',
+] as const;
+
+export function buildMtdRedirectTarget(seed: string, timestampMs = Date.now()): string {
+  const bucket = Math.floor(timestampMs / 7_000);
+  let hash = 2166136261;
+  const input = `${seed}:${bucket}`;
+  for (let i = 0; i < input.length; i += 1) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  const hex = (hash >>> 0).toString(16).padStart(8, '0');
+  const slug = DECOY_SLUGS[(hash >>> 0) % DECOY_SLUGS.length];
+  return `/api/trap?mtd=${hex}&shard=${slug}`;
+}
+
