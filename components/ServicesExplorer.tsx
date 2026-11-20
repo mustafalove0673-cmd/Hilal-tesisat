@@ -11,7 +11,8 @@ import {
   type ServiceItem,
 } from '@/lib/site-data';
 import { SafeImage } from './SafeImage';
-import { EASE_LUXURY } from './MotionPrimitives';
+import { AwwwardsFadeUpCard, EASE_LUXURY } from './MotionPrimitives';
+import { computeStaggeredRevealDelay } from '@/lib/awwwards-motion';
 
 const CATEGORIES: { id: ServiceCategory; label: string }[] = [
   { id: 'tumu', label: 'Tüm Hizmetler' },
@@ -131,9 +132,15 @@ export function ServicesExplorer() {
           const numPrefix = String(idx + 1).padStart(2, '0');
 
           return (
-            <article
-              key={svc.slug}
+            <AwwwardsFadeUpCard
+              as="article"
+              key={`${activeCategory}-${svc.slug}`}
               id={svc.slug}
+              testId="service-explorer-card"
+              trigger={activeCategory === 'tumu' ? 'inView' : 'immediate'}
+              delay={computeStaggeredRevealDelay(idx, 1, 0.06, 0.24)}
+              y={38}
+              duration={0.72}
               className="pearl-glass rounded-3xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 items-stretch transition-transform duration-200 hover:-translate-y-0.5"
             >
               {/* Floating Sculpted Hardware Showcase Stage */}
@@ -219,7 +226,7 @@ export function ServicesExplorer() {
                   </div>
                 </div>
               </div>
-            </article>
+            </AwwwardsFadeUpCard>
           );
         })}
       </div>

@@ -5,6 +5,8 @@ import { ArrowRight, Award, Star, Users } from 'lucide-react';
 import { buildPageMetadata } from '@/lib/seo';
 import { SubpageShell } from '@/components/SubpageShell';
 import { SafeImage } from '@/components/SafeImage';
+import { AwwwardsFadeUpCard } from '@/components/MotionPrimitives';
+import { computeStaggeredRevealDelay } from '@/lib/awwwards-motion';
 import { SITE_IMAGES, SITE_INFO, TESTIMONIALS } from '@/lib/site-data';
 
 export const metadata: Metadata = buildPageMetadata({
@@ -184,9 +186,14 @@ export default function KurumsalPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {TESTIMONIALS.map((review) => (
-              <article
+            {TESTIMONIALS.map((review, idx) => (
+              <AwwwardsFadeUpCard
+                as="article"
                 key={review.id}
+                testId="kurumsal-testimonial-card"
+                delay={computeStaggeredRevealDelay(idx, 3, 0.075, 0.32)}
+                y={36}
+                duration={0.72}
                 className="pearl-glass rounded-2xl p-6 flex flex-col justify-between space-y-4"
               >
                 <div className="space-y-3">
@@ -210,15 +217,15 @@ export default function KurumsalPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-1 pt-1">
-                  {Array.from({ length: review.rating }).map((_, idx) => (
+                  {Array.from({ length: review.rating }).map((_, starIdx) => (
                     <Star
-                      key={idx}
+                      key={starIdx}
                       className="w-3.5 h-3.5 fill-[#7D1A23] text-[#7D1A23]"
                       aria-hidden="true"
                     />
                   ))}
                 </div>
-              </article>
+              </AwwwardsFadeUpCard>
             ))}
           </div>
         </section>

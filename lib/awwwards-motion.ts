@@ -123,3 +123,28 @@ export function resolveDeckSwipeAction(
   if (offsetX >= thresholdPx || velocityX >= velocityThreshold) return 'prev';
   return 'stay';
 }
+
+/**
+ * Computes a bounded diagonal cascade delay (in seconds) for Awwwards-style
+ * staggered fade-up card grids. Column progression drives the primary rhythm
+ * while row progression adds a subtle wave without delaying lower rows too long.
+ */
+export function computeStaggeredRevealDelay(
+  index: number,
+  columns = 4,
+  stepSec = 0.065,
+  maxDelaySec = 0.34,
+): number {
+  if (!Number.isFinite(index) || index <= 0) return 0;
+  const safeCols = Math.max(1, Math.floor(Number.isFinite(columns) ? columns : 1));
+  const safeStep = Math.max(0, Number.isFinite(stepSec) ? stepSec : 0);
+  const safeMax = Math.max(0, Number.isFinite(maxDelaySec) ? maxDelaySec : 0);
+
+  const safeIdx = Math.floor(index);
+  const col = safeIdx % safeCols;
+  const row = Math.floor(safeIdx / safeCols);
+  const raw = col * safeStep + row * safeStep * 0.55;
+
+  return Number(Math.min(raw, safeMax).toFixed(3));
+}
+

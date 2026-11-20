@@ -15,6 +15,7 @@ import { TESTIMONIALS } from '@/lib/site-data';
 import { computeDeckCardTransform, resolveDeckSwipeAction } from '@/lib/awwwards-motion';
 import { SafeImage } from './SafeImage';
 import {
+  AwwwardsFadeUpCard,
   EASE_LUXURY,
   MagneticAction,
   SplitTextReveal,
@@ -245,12 +246,21 @@ export function AwwwardsTestimonials() {
     <section id="yorumlar" className="relative z-10 scroll-mt-24 py-6 sm:py-12">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
         {/* Awwwards Atelier Crimson-Obsidian Interactive Review Stage */}
-        <div
+        <motion.div
           ref={stageRef}
+          data-testid="testimonial-stage-card"
+          initial={
+            prefersReducedMotion
+              ? false
+              : { opacity: 0, y: 40, scale: 0.98 }
+          }
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.14 }}
+          transition={{ duration: 0.78, ease: EASE_LUXURY }}
           onPointerMove={handleStagePointerMove}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          className="relative rounded-[22px] sm:rounded-[34px] overflow-hidden bg-gradient-to-br from-[#350610] via-[#5C0B1B] to-[#23040A] border border-[#E9D1C0]/25 shadow-[0_28px_70px_-28px_rgba(46,5,13,0.68)] px-4 py-5 sm:px-8 sm:py-9 lg:px-11 lg:py-10"
+          className="relative rounded-[22px] sm:rounded-[34px] overflow-hidden bg-gradient-to-br from-[#350610] via-[#5C0B1B] to-[#23040A] border border-[#E9D1C0]/25 shadow-[0_28px_70px_-28px_rgba(46,5,13,0.68)] px-4 py-5 sm:px-8 sm:py-9 lg:px-11 lg:py-10 will-change-transform"
         >
           {/* Interactive Pointer-Following Spotlight Layer */}
           <motion.div
@@ -289,27 +299,29 @@ export function AwwwardsTestimonials() {
               </div>
 
               {/* Unboxed Editorial Rating Proof */}
-              <div className="flex items-center gap-3.5 sm:gap-4">
-                <div className="flex items-baseline gap-1 font-sans text-xl sm:text-3xl font-bold text-white tabular-nums leading-none">
-                  <span>4.9</span>
-                  <span className="text-xs sm:text-sm font-medium text-[#E9D1C0]/80">/ 5.0</span>
-                </div>
-                <div className="h-6 sm:h-7 w-[1px] bg-white/15" aria-hidden="true" />
-                <div>
-                  <div className="flex items-center gap-0.5" aria-label="5 üzerinden 4.9 yıldız">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-[#F3C99E] text-[#F3C99E]"
-                        aria-hidden="true"
-                      />
-                    ))}
+              <AwwwardsFadeUpCard delay={0.12} y={24} duration={0.66}>
+                <div className="flex items-center gap-3.5 sm:gap-4">
+                  <div className="flex items-baseline gap-1 font-sans text-xl sm:text-3xl font-bold text-white tabular-nums leading-none">
+                    <span>4.9</span>
+                    <span className="text-xs sm:text-sm font-medium text-[#E9D1C0]/80">/ 5.0</span>
                   </div>
-                  <p className="mt-0.5 sm:mt-1 text-[10.5px] sm:text-[11px] text-[#EBDAD0]">
-                    1.000+ Doğrulanmış Ankara Hizmeti
-                  </p>
+                  <div className="h-6 sm:h-7 w-[1px] bg-white/15" aria-hidden="true" />
+                  <div>
+                    <div className="flex items-center gap-0.5" aria-label="5 üzerinden 4.9 yıldız">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-[#F3C99E] text-[#F3C99E]"
+                          aria-hidden="true"
+                        />
+                      ))}
+                    </div>
+                    <p className="mt-0.5 sm:mt-1 text-[10.5px] sm:text-[11px] text-[#EBDAD0]">
+                      1.000+ Doğrulanmış Ankara Hizmeti
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </AwwwardsFadeUpCard>
 
               {/* Interactive Customer Avatar Dock (One-Tap Jump to Any Review) */}
               <div
@@ -396,7 +408,13 @@ export function AwwwardsTestimonials() {
             </div>
 
             {/* RIGHT 3D INTERACTIVE SWIPEABLE CARD DECK (Ultra-Compact on Mobile!) */}
-            <div className="lg:col-span-7 flex flex-col items-center">
+            <AwwwardsFadeUpCard
+              delay={0.2}
+              y={38}
+              duration={0.78}
+              testId="testimonial-deck-reveal"
+              className="lg:col-span-7 flex flex-col items-center"
+            >
               <div
                 data-cursor="KAYDIR"
                 className="relative w-full max-w-[540px] h-[214px] sm:h-[258px] [perspective:1200px]"
@@ -474,9 +492,9 @@ export function AwwwardsTestimonials() {
                 <MoveHorizontal className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Kartı sola veya sağa kaydırın</span>
               </div>
-            </div>
+            </AwwwardsFadeUpCard>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

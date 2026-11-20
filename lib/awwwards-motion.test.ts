@@ -5,6 +5,7 @@ import {
   computeDeckCardTransform,
   computeMagneticPull,
   computeScrollVelocitySkew,
+  computeStaggeredRevealDelay,
   formatOdometerValue,
   resolveDeckSwipeAction,
 } from './awwwards-motion';
@@ -66,3 +67,17 @@ test('resolveDeckSwipeAction detects swipe distance and flick velocity accuratel
   assert.equal(resolveDeckSwipeAction(10, 500), 'prev');
   assert.equal(resolveDeckSwipeAction(20, 40), 'stay');
 });
+
+test('computeStaggeredRevealDelay produces bounded diagonal cascade delays', () => {
+  assert.equal(computeStaggeredRevealDelay(0, 4, 0.065, 0.34), 0);
+  assert.equal(computeStaggeredRevealDelay(-2, 4, 0.065, 0.34), 0);
+
+  const col1 = computeStaggeredRevealDelay(1, 4, 0.065, 0.34);
+  const col2 = computeStaggeredRevealDelay(2, 4, 0.065, 0.34);
+  const row2Col0 = computeStaggeredRevealDelay(4, 4, 0.065, 0.34);
+  assert.ok(col1 > 0 && col2 > col1);
+  assert.ok(row2Col0 > 0 && row2Col0 < col1);
+
+  assert.equal(computeStaggeredRevealDelay(23, 4, 0.08, 0.32), 0.32);
+});
+

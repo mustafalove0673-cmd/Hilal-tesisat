@@ -83,6 +83,60 @@ export function EditorialReveal({
   );
 }
 
+interface AwwwardsFadeUpCardProps {
+  children: React.ReactNode;
+  as?: 'div' | 'article';
+  id?: string;
+  delay?: number;
+  y?: number;
+  duration?: number;
+  trigger?: 'inView' | 'immediate';
+  className?: string;
+  testId?: string;
+}
+
+/**
+ * Awwwards-style orchestrated 'fade-up' scroll reveal for cards:
+ * rises smoothly on an architectural expo-out curve with subtle scale settle
+ * and micro-focus sharpen, firing once on viewport entry and respecting
+ * prefers-reduced-motion.
+ */
+export function AwwwardsFadeUpCard({
+  children,
+  as = 'div',
+  id,
+  delay = 0,
+  y = 36,
+  duration = 0.72,
+  trigger = 'inView',
+  className = '',
+  testId,
+}: AwwwardsFadeUpCardProps) {
+  const prefersReducedMotion = useReducedMotion();
+  const Component = as === 'article' ? motion.article : motion.div;
+  const targetState = { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' };
+
+  return (
+    <Component
+      id={id}
+      data-testid={testId}
+      initial={
+        prefersReducedMotion
+          ? false
+          : { opacity: 0, y, scale: 0.965, filter: 'blur(4px)' }
+      }
+      animate={trigger === 'immediate' ? targetState : undefined}
+      whileInView={trigger === 'inView' ? targetState : undefined}
+      viewport={trigger === 'inView' ? { once: true, amount: 0.08 } : undefined}
+      transition={{ duration, delay, ease: EASE_LUXURY }}
+      className={`will-change-transform ${className}`}
+    >
+      {children}
+    </Component>
+  );
+}
+
+
 interface SplitTextRevealProps {
   text: string;
   as?: 'h1' | 'h2' | 'h3' | 'p';

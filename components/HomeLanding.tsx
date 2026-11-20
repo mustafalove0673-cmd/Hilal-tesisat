@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import {
   motion,
   AnimatePresence,
+  useInView,
   useReducedMotion,
   useScroll,
   useSpring,
@@ -59,6 +60,7 @@ import { AwwwardsTestimonials } from './AwwwardsTestimonials';
 import { FaqAccordion } from './FaqAccordion';
 import { QuoteForm } from './QuoteForm';
 import { LiveLocationMap } from './LiveLocationMap';
+import { computeStaggeredRevealDelay } from '@/lib/awwwards-motion';
 
 const SERVICE_FILTERS: { id: ServiceCategory; label: string }[] = [
   { id: 'tumu', label: 'Tümü' },
@@ -95,6 +97,8 @@ export function HomeLanding() {
   const [showIntroModal, setShowIntroModal] = useState(false);
 
   const heroRef = useRef<HTMLElement>(null);
+  const servicesGridRef = useRef<HTMLDivElement>(null);
+  const servicesInView = useInView(servicesGridRef, { once: true, amount: 0.12 });
   const prefersReducedMotion = useReducedMotion();
 
   const { scrollYProgress: heroScrollProgress } = useScroll({
@@ -419,8 +423,9 @@ export function HomeLanding() {
               </ParallaxLayer>
             </div>
 
-            {/* Right Interactive Service Cards with Spring Layout Reordering */}
+            {/* Right Interactive Service Cards with Orchestrated Awwwards Fade-Up & Spring Layout */}
             <motion.div
+              ref={servicesGridRef}
               layout
               className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-3.5"
             >
@@ -428,17 +433,25 @@ export function HomeLanding() {
                 {visibleServices.map((service, index) => (
                   <motion.div
                     key={service.slug}
+                    data-testid="service-card"
                     layout
-                    initial={prefersReducedMotion ? false : { opacity: 0, y: 24, scale: 0.96 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: true, amount: 0.12 }}
-                    exit={{ opacity: 0, scale: 0.94 }}
+                    initial={
+                      prefersReducedMotion
+                        ? false
+                        : { opacity: 0, y: 36, scale: 0.96, filter: 'blur(4px)' }
+                    }
+                    animate={
+                      prefersReducedMotion || servicesInView
+                        ? { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }
+                        : { opacity: 0, y: 36, scale: 0.96, filter: 'blur(4px)' }
+                    }
+                    exit={{ opacity: 0, y: -12, scale: 0.95 }}
                     transition={{
-                      duration: 0.52,
-                      delay: Math.min(index * 0.04, 0.24),
+                      duration: 0.7,
+                      delay: computeStaggeredRevealDelay(index, 4, 0.065, 0.34),
                       ease: EASE_LUXURY,
                     }}
-                    className="h-full"
+                    className="h-full will-change-transform"
                   >
                     <LuxuryInteractiveCard className="h-full rounded-2xl bg-gradient-to-b from-white/95 to-[#F1ECE8]/92 border border-white ring-1 ring-[#4A0D13]/10 shadow-[0_10px_24px_-16px_rgba(54,8,13,0.16)] hover:ring-[#A81830]/35">
                       <button
