@@ -81,7 +81,7 @@ export function validateQuotePayload(
 
   const phone = sanitizeText(raw.phone, 30);
   if (!validateTurkishPhone(phone)) {
-    errors.phone = 'Lütfen geçerli bir Türkiye telefon numarası girin (ör. 0555 078 44 18).';
+    errors.phone = 'Lütfen geçerli bir Türkiye telefon numarası girin (ör. 0535 078 44 18).';
   }
 
   const email = sanitizeText(raw.email, 160);
@@ -215,14 +215,18 @@ export const DECOY_PROBE_PATHS: readonly string[] = [
   '/decoy-archive',
 ];
 
+export const MALICIOUS_QUERY_RE =
+  /(union\s+select|select\s+.*\s+from|<script|%3cscript|javascript:|etc\/passwd|\.\.\/\.\.\/|sleep\(|benchmark\(|xp_cmdshell)/i;
+
 export interface DeceptionDecision {
   action: 'allow' | 'mtd_redirect';
-  reason?: 'probe_path' | 'cloner_ua';
+  reason?: 'probe_path' | 'cloner_ua' | 'injection_probe';
 }
 
 export function evaluateRequestDeception(
   userAgent: string | null | undefined,
   pathname: string,
+  search = '',
 ): DeceptionDecision {
   const normalizedPath = pathname.toLowerCase();
   const ua = (userAgent ?? '').trim();
@@ -247,6 +251,19 @@ export function evaluateRequestDeception(
     )
   ) {
     return { action: 'mtd_redirect', reason: 'probe_path' };
+  }
+
+  // Trap SQLi / XSS / path-traversal query injection probes immediately
+  if (search) {
+    let decodedSearch = search;
+    try {
+      decodedSearch = decodeURIComponent(search);
+    } catch {
+      decodedSearch = search;
+    }
+    if (MALICIOUS_QUERY_RE.test(search) || MALICIOUS_QUERY_RE.test(decodedSearch)) {
+      return { action: 'mtd_redirect', reason: 'injection_probe' };
+    }
   }
 
   // Preserve search engine rankings (#1 Google/Bing/WhatsApp preview)

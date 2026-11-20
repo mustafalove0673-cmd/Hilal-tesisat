@@ -38,18 +38,18 @@ export function CookieConsent() {
   return (
     <aside
       aria-label="Çerez Tercihleri"
-      className="fixed bottom-16 left-3 right-3 sm:right-auto sm:left-5 sm:bottom-5 sm:max-w-xs z-40 rounded-xl bg-[#230508]/95 text-[#F8F5F2] border border-[#C8A287]/35 px-3 py-2.5 shadow-2xl backdrop-blur-md"
+      className="fixed bottom-[72px] left-3 right-3 sm:right-auto sm:left-5 sm:bottom-5 sm:max-w-xs z-40 rounded-xl bg-[#5C0B1A]/95 text-[#F8F5F2] border border-[#E5C1A8]/35 px-3 py-2.5 shadow-2xl backdrop-blur-md"
     >
       <div className="flex items-start gap-2">
-        <ShieldCheck className="w-3.5 h-3.5 text-[#C8A287] shrink-0 mt-0.5" aria-hidden="true" />
+        <ShieldCheck className="w-3.5 h-3.5 text-[#E5C1A8] shrink-0 mt-0.5" aria-hidden="true" />
         <div className="flex-1 min-w-0">
-          <p className="text-[10.5px] leading-snug text-[#E9DFD9]">
+          <p className="text-[10.5px] leading-snug text-[#F2E4DC]">
             Zorunlu güvenlik çerezleri kullanıyoruz.{' '}
-            <Link href="/yasal/cerez-politikasi" className="underline text-white hover:text-[#C8A287]">
+            <Link href="/yasal/cerez-politikasi" className="underline text-white hover:text-[#E5C1A8]">
               Çerez Politikası
             </Link>{' '}
             ve{' '}
-            <Link href="/yasal/kvkk" className="underline text-white hover:text-[#C8A287]">
+            <Link href="/yasal/kvkk" className="underline text-white hover:text-[#E5C1A8]">
               KVKK
             </Link>
             .
@@ -58,7 +58,7 @@ export function CookieConsent() {
             <button
               type="button"
               onClick={() => savePreference('all')}
-              className="px-2.5 py-0.5 rounded-full bg-[#F8F5F2] text-[#230508] text-[10px] font-semibold hover:bg-[#EAE2DC] transition-colors whitespace-nowrap"
+              className="px-2.5 py-0.5 rounded-full bg-[#F8F5F2] text-[#660D1C] text-[10px] font-semibold hover:bg-[#EAE2DC] transition-colors whitespace-nowrap"
             >
               Kabul Et
             </button>

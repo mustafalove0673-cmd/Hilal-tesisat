@@ -2,13 +2,22 @@ export const SITE_INFO = {
   brandName: 'Hilal Tesisat',
   brandWordmark: 'HİLAL TESİSAT',
   tagline: 'Güvenli Yaşam, Profesyonel Çözümler.',
-  phoneDisplay: '+90 555 078 44 18',
-  phoneHref: 'tel:+905550784418',
-  whatsappNumber: '905550784418',
+  phoneDisplay: '0535 078 44 18',
+  phoneInternational: '+90 535 078 44 18',
+  phoneHref: 'tel:+905350784418',
+  whatsappNumber: '905350784418',
   email: 'hilal.servicesss@gmail.com',
-  addressLine1: 'Edebali Cd. 78, 06145',
-  addressLine2: 'Pursaklar / Ankara',
-  fullAddress: 'Edebali Cd. No:78, 06145 Pursaklar / Ankara',
+  addressLine1: 'Saray Cumhuriyet, Edebali Sk. 7 B',
+  addressLine2: '06146 Pursaklar / Ankara',
+  fullAddress: 'Saray Cumhuriyet, Edebali Sk. 7 B, 06146 Pursaklar/Ankara',
+  googleMapsUrl: 'https://maps.app.goo.gl/P8yoEV7MEW1dzgPs5?g_st=ac',
+  instagramUrl: 'https://www.instagram.com/hilaltesisatdogalgaz?avpt=MTVxZzV4ZDg3c2F2Yg==',
+  instagramCanonicalUrl: 'https://www.instagram.com/hilaltesisatdogalgaz/',
+  instagramHandle: '@hilaltesisatdogalgaz',
+  coordinates: {
+    lat: 40.0717,
+    lng: 32.9285,
+  },
   workingHours: '7/24 Acil Teknik Destek',
   experienceYears: '15+',
   happyClients: '1000+',
@@ -16,6 +25,7 @@ export const SITE_INFO = {
   mersisOrTaxNote: 'Yetkili Doğalgaz & Sıhhi Tesisat Mühendislik Hizmetleri',
   serviceDistricts: [
     'Pursaklar',
+    'Saray Cumhuriyet',
     'Keçiören',
     'Çankaya',
     'Yenimahalle',
@@ -30,22 +40,98 @@ export const SITE_INFO = {
 export function buildWhatsappHref(subject?: string): string {
   const baseText = subject
     ? `Merhaba Hilal Tesisat, ${subject} hakkında bilgi ve ücretsiz keşif randevusu almak istiyorum.`
-    : 'Merhaba Hilal Tesisat, tesisat hizmetleriniz hakkında bilgi ve fiyat teklifi almak istiyorum.';
+    : 'Merhaba Hilal Tesisat, tesisat hizmetleriniz hakkında destek ve ücretsiz keşif bilgisi almak istiyorum.';
   return `https://wa.me/${SITE_INFO.whatsappNumber}?text=${encodeURIComponent(baseText)}`;
 }
 
+export interface FieldVideoItem {
+  id: string;
+  title: string;
+  category: string;
+  duration: string;
+  location: string;
+  description: string;
+  src: string;
+  poster: string;
+  serviceQuery: string;
+}
+
+export const FIELD_VIDEOS: FieldVideoItem[] = [
+  {
+    id: 'hilal-servis-tanitim',
+    title: 'Kombi, Petek & Mekanik Saha Tanıtımı',
+    category: 'Kurumsal Tanıtım',
+    duration: '0:16',
+    location: 'Pursaklar / Ankara',
+    description:
+      'Yetkili atölyemiz, sertifikalı uzman kadromuz ve sahadaki kombi, kollektör, petek temizliği uygulamalarımızdan gerçek kesitler.',
+    src: '/assets/aistudio/VID-20261115-WA0007_076e8921.mp4',
+    poster: '/images/project_boiler_bathroom_1795098584339.jpg',
+    serviceQuery: 'Kombi Bakımı ve Petek Temizliği',
+  },
+  {
+    id: 'kaskad-brulor-bakimi',
+    title: 'Kaskad Kazan & Yoğuşmalı Brülör Bakımı',
+    category: 'Isıtma Mühendisliği',
+    duration: '0:27',
+    location: 'Ankara Merkez',
+    description:
+      'Çoklu kaskad kazan dairesi fan sökümü, yanma odası temizliği, eşanjör bakımı ve yüksek verimli kalibrasyon çalışmamız.',
+    src: '/assets/aistudio/VID-20261115-WA0006_c5407652.mp4',
+    poster: '/images/subpage_banner_heating_1795100948517.jpg',
+    serviceQuery: 'Kaskad Kazan ve Kombi Bakımı',
+  },
+  {
+    id: 'su-aritma-montaj',
+    title: 'Tezgah Altı Su Arıtma Cihazı Kurulumu',
+    category: 'Su Arıtma',
+    duration: '0:13',
+    location: 'Saray Cumhuriyet / Pursaklar',
+    description:
+      'Modern mutfak eviyesine entegre paslanmaz musluk bağlantısı, kapalı kasa tank yerleşimi ve sızdırmazlık testi.',
+    src: '/assets/aistudio/VID-20261115-WA0008_65855624.mp4',
+    poster: '/images/service_water_purifier_1795098584188.jpg',
+    serviceQuery: 'Su Arıtma Cihazı Kurulumu',
+  },
+  {
+    id: 'yerden-isitma-kollektor',
+    title: 'Yerden Isıtma & Tesisat Uygulama Kolajı',
+    category: 'Saha Uygulamaları',
+    duration: '0:24',
+    location: 'Keçiören & Pursaklar',
+    description:
+      'Yerden ısıtma strafor döşemesi, dağıtım kollektör hattı, gider açma ve kombi bağlantılarından canlı uygulama görüntüleri.',
+    src: '/assets/aistudio/VID-20261115-WA0005_73f4f394.mp4',
+    poster: '/images/project_underfloor_heating_1795098583990.jpg',
+    serviceQuery: 'Yerden Isıtma ve Kollektör Sistemi',
+  },
+  {
+    id: 'tarimsal-su-tesisati',
+    title: 'Çiftlik & Otomatik Suluk Su Hattı Kurulumu',
+    category: 'Özel Su Tesisatı',
+    duration: '0:06',
+    location: 'Ankara Çevre İlçeler',
+    description:
+      'Donmaya dayanıklı dış mekan PPRC hat çekimi, şamandıralı otomatik suluk ve kesintisiz basınçlı su altyapısı.',
+    src: '/assets/aistudio/VID-20261115-WA0004_6e1053ed.mp4',
+    poster: '/images/service_plumbing_pipes_1795098583935.jpg',
+    serviceQuery: 'Özel Sıhhi ve Dış Mekan Su Tesisatı',
+  },
+];
+
 export const SITE_IMAGES = {
-  heroVilla: '/images/hero_villa_grand_hilal.jpg',
+  heroVilla: '/images/hero_luxury_architectural_awwwards_1795194358259.jpg',
   pearlRibbonBg: '/images/bg_silk_vivid_1795101487490.jpg',
   pearlSilkBackdrop: '/images/bg_silk_vivid_1795101487490.jpg',
-  bannerHeating: '/images/subpage_banner_heating_1795100948517.jpg',
+  contactConciergeStage: '/images/luxury_contact_concierge_stage_1795194357410.jpg',
+  bannerHeating: '/images/luxury_boiler_copper_suite_1795194358082.jpg',
   bannerGas: '/images/subpage_banner_gas_engineering_1795100948428.jpg',
-  bannerWater: '/images/subpage_banner_water_luxury_1795100948526.jpg',
+  bannerWater: '/images/luxury_bathroom_hydronics_1795194357648.jpg',
   corporateTeam: '/images/subpage_corporate_team_1795100948395.jpg',
   waterSplash: '/images/water_vivid_1795101487866.jpg',
   emblemMetal: '/images/emblem_vivid_1795101488092.jpg',
-  projectBoilerBathroom: '/images/project_boiler_bathroom_1795098584339.jpg',
-  projectBathroomLuxury: '/images/project_bathroom_luxury_1795099756865.jpg',
+  projectBoilerBathroom: '/images/luxury_boiler_copper_suite_1795194358082.jpg',
+  projectBathroomLuxury: '/images/luxury_bathroom_hydronics_1795194357648.jpg',
   projectUnderfloorHeating: '/images/project_underfloor_heating_1795098583990.jpg',
   projectVillaExterior: '/images/project_villa_exterior_1795098584161.jpg',
   technicianPortrait: '/images/technician_rear_clean_1795099757031.jpg',

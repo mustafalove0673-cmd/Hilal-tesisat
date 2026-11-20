@@ -1,8 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useRef, useState } from 'react';
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'motion/react';
 import {
   ArrowRight,
   Award,
@@ -10,52 +16,102 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
+  FileCheck2,
   Headphones,
+  Instagram,
   Mail,
-  MapPin,
   MessageCircle,
+  Navigation,
   Phone,
   Play,
   ShieldCheck,
-  Star,
   Users,
+  Wrench,
   X,
 } from 'lucide-react';
 import {
   buildWhatsappHref,
+  FIELD_VIDEOS,
   PROJECTS,
   SERVICES,
   SITE_IMAGES,
   SITE_INFO,
-  TESTIMONIALS,
+  type ServiceCategory,
   type ServiceItem,
 } from '@/lib/site-data';
 import { SafeImage } from './SafeImage';
 import {
-  ArchitecturalMaskReveal,
+  AnimatedCounter,
+  CurtainImageReveal,
   EditorialReveal,
   EASE_LUXURY,
+  KineticEditorialMarquee,
   LuxuryInteractiveCard,
+  MagneticAction,
   ParallaxLayer,
   SilkRibbonParallax,
+  SplitTextReveal,
+  SPRING_ARCHITECTURAL,
 } from './MotionPrimitives';
 import { HilalLogo } from './HilalLogo';
+import { FieldReelsShowcase } from './FieldReelsShowcase';
+import { AwwwardsTestimonials } from './AwwwardsTestimonials';
+import { FaqAccordion } from './FaqAccordion';
+import { QuoteForm } from './QuoteForm';
+import { LiveLocationMap } from './LiveLocationMap';
+
+const SERVICE_FILTERS: { id: ServiceCategory; label: string }[] = [
+  { id: 'tumu', label: 'Tümü' },
+  { id: 'isitma', label: 'Isıtma' },
+  { id: 'dogalgaz', label: 'Doğalgaz' },
+  { id: 'su-tesisat', label: 'Su & Sıhhi' },
+];
+
+const CORPORATE_PILLARS = [
+  {
+    icon: FileCheck2,
+    title: 'Başkentgaz Yetkili Mühendislik',
+    description:
+      'ZetaCAD iç tesisat projelendirme, resmi sızdırmazlık onayı ve gaz açım işlemlerinde eksiksiz yetkili süreç.',
+  },
+  {
+    icon: Wrench,
+    title: 'TSE Belgeli Orijinal Ekipman',
+    description:
+      'Bakır kollektör, oksijen bariyerli PEX-a boru ve orijinal yedek parçalarla uzun ömürlü mekanik sistemler.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Yazılı İşçilik Garantisi',
+    description:
+      'Her kombi bakımı, petek temizliği ve tesisat uygulaması dijital kayıt altında 1–2 yıl yazılı güvenceyle teslim edilir.',
+  },
+];
 
 export function HomeLanding() {
+  const [serviceFilter, setServiceFilter] = useState<ServiceCategory>('tumu');
   const [activeProjectIdx, setActiveProjectIdx] = useState(0);
-  const [reviewPage, setReviewPage] = useState(0);
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [showIntroModal, setShowIntroModal] = useState(false);
 
-  const featuredServices = SERVICES.slice(0, 7);
-  const activeProject = PROJECTS[activeProjectIdx] ?? PROJECTS[0];
+  const heroRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
-  const reviewsPerPage = 3;
-  const totalReviewPages = Math.ceil(TESTIMONIALS.length / reviewsPerPage);
-  const visibleReviews = TESTIMONIALS.slice(
-    reviewPage * reviewsPerPage,
-    reviewPage * reviewsPerPage + reviewsPerPage,
-  );
+  const { scrollYProgress: heroScrollProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const smoothHeroScroll = useSpring(heroScrollProgress, { stiffness: 130, damping: 26 });
+  const heroBgY = useTransform(smoothHeroScroll, [0, 1], [0, 82]);
+  const heroBgScale = useTransform(smoothHeroScroll, [0, 1], [1, 1.1]);
+  const heroTextY = useTransform(smoothHeroScroll, [0, 1], [0, -34]);
+
+  const visibleServices =
+    serviceFilter === 'tumu'
+      ? SERVICES
+      : SERVICES.filter((svc) => svc.category === serviceFilter);
+
+  const activeProject = PROJECTS[activeProjectIdx] ?? PROJECTS[0];
 
   function prevProject() {
     setActiveProjectIdx((prev) => (prev - 1 + PROJECTS.length) % PROJECTS.length);
@@ -65,368 +121,492 @@ export function HomeLanding() {
     setActiveProjectIdx((prev) => (prev + 1) % PROJECTS.length);
   }
 
+  function scrollToSection(id: string) {
+    const el = document.getElementById(id);
+    if (el) {
+      if (window.__hilalLenis) {
+        window.__hilalLenis.scrollTo(el, { offset: -74 });
+      } else {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }
+
   return (
-    <div className="relative overflow-hidden bg-[#EBE7E4]">
-      {/* Rich Architectural Silk & Burgundy Ribbon Texture Layer */}
+    <div className="relative overflow-hidden bg-[#EFECE9]">
+      {/* Subtle Architectural Silk Texture Behind Light Sections */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden z-0">
         <SafeImage
           src={SITE_IMAGES.pearlSilkBackdrop}
           alt=""
-          className="w-full h-full object-cover opacity-[0.14] saturate-125"
+          className="w-full h-full object-cover opacity-[0.1] saturate-110"
         />
-        <SilkRibbonParallax className="absolute inset-0 w-full h-full" />
+        <SilkRibbonParallax className="absolute inset-0 w-full h-full opacity-75" />
       </div>
 
-      {/* 1. HERO SECTION */}
+      {/* 1. AWWWARDS EDITORIAL ARCHITECTURAL HERO */}
       <section
         id="hero"
-        className="relative overflow-hidden bg-gradient-to-b from-[#F3EEE9] via-[#EFEBE7] to-[#EBE7E4] sm:bg-none"
+        ref={heroRef}
+        className="relative -mt-[64px] sm:-mt-[78px] pt-[74px] sm:pt-[96px] overflow-hidden bg-[#EDE7E1]"
       >
-        {/* Desktop & Tablet Full-Bleed Panoramic Architectural Canvas */}
-        <div className="hidden sm:block absolute inset-0 z-0">
-          <SafeImage
-            src={SITE_IMAGES.heroVilla}
-            alt="Hilal Tesisat Modern Mimari Doğalgaz ve Mekanik Tesisat Projesi"
-            className="w-full h-full object-cover object-center contrast-[1.03] saturate-[1.06]"
+        {/* Full-Bleed Architectural Villa + Scroll Parallax + Immediate Ken Burns */}
+        <div className="hidden sm:block absolute inset-0 z-0 overflow-hidden">
+          <motion.div
+            style={prefersReducedMotion ? undefined : { y: heroBgY, scale: heroBgScale }}
+            className="w-full h-full will-change-transform"
+          >
+            <motion.div
+              initial={prefersReducedMotion ? false : { scale: 1.09 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.45, ease: EASE_LUXURY }}
+              className="w-full h-full will-change-transform"
+            >
+              <SafeImage
+                src={SITE_IMAGES.heroVilla}
+                alt="Hilal Tesisat Modern Mimari Villa, Hilal Sembolü ve Bordo Kurdele"
+                className="w-full h-full object-cover object-right contrast-[1.03] saturate-[1.05]"
+              />
+            </motion.div>
+          </motion.div>
+          {/* Seamless Architectural Pearl-to-Twilight Left Mask (Zero Hard Seam) */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-r from-[#EFEAE5] from-[28%] via-[#EFEAE5]/88 via-[39%] to-transparent to-[58%]"
           />
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-r from-[#F3EDE7]/80 via-[#F3EDE7]/28 via-30% to-transparent"
+            className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#1A0306]/35 to-transparent"
           />
           <div
             aria-hidden="true"
-            className="absolute inset-x-0 bottom-0 h-28 sm:h-40 bg-gradient-to-t from-[#EBE7E4] via-[#EBE7E4]/82 via-35% to-transparent"
+            className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#EFECE9] via-[#EFECE9]/75 to-transparent"
           />
         </div>
 
-        {/* Content & Mobile Dedicated Scenic Showcase */}
-        <div className="relative z-10 mx-auto max-w-[1280px] w-full px-3.5 sm:px-6 lg:px-8 pt-5 pb-4 sm:py-16 lg:py-24 sm:min-h-[640px] lg:min-h-[750px] flex flex-col justify-center">
-          <div className="max-w-full sm:max-w-[545px]">
+        {/* Refined Compact Editorial Content with Scroll Depth Float */}
+        <div className="relative z-10 mx-auto max-w-[1280px] w-full px-4 sm:px-6 lg:px-8 pt-4 pb-8 sm:py-14 lg:py-20 sm:min-h-[600px] lg:min-h-[670px] flex flex-col justify-center">
+          <motion.div
+            style={prefersReducedMotion ? undefined : { y: heroTextY }}
+            className="max-w-full sm:max-w-[500px] will-change-transform"
+          >
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, ease: EASE_LUXURY }}
-              className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-4"
+              initial={prefersReducedMotion ? false : { opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.65, delay: 0.02, ease: EASE_LUXURY }}
+              className="flex items-center gap-2.5 mb-2.5"
             >
-              <span className="h-[1px] w-6 sm:w-10 bg-[#8C5B4D]" aria-hidden="true" />
-              <span className="text-[11px] sm:text-[13px] font-medium tracking-wide text-[#5E4540]">
-                Profesyonel Tesisat Çözümleri
+              <motion.span
+                initial={prefersReducedMotion ? false : { scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.75, delay: 0.08, ease: EASE_LUXURY }}
+                className="h-[1px] w-7 bg-[#A81830] origin-left"
+                aria-hidden="true"
+              />
+              <span className="text-[11px] sm:text-xs font-semibold tracking-wide text-[#9A152B]">
+                Pursaklar · Ankara — Yetkili Mekanik & Doğalgaz
               </span>
             </motion.div>
 
-            <ArchitecturalMaskReveal delay={0.05}>
-              <h1 className="font-display text-[32px] sm:text-[50px] lg:text-[62px] font-semibold leading-[1.04] tracking-[-0.015em] text-[#1D1716] text-balance max-w-[340px] sm:max-w-none">
-                Hayatınızı Güvenle Akıtan Teknoloji
-              </h1>
-            </ArchitecturalMaskReveal>
+            <SplitTextReveal
+              as="h1"
+              trigger="immediate"
+              delay={0.06}
+              text="Hayatınızı Güvenle Akıtan Teknoloji"
+              className="font-display text-[30px] sm:text-[40px] lg:text-[46px] font-semibold leading-[1.08] tracking-[-0.015em] text-[#1A1211] text-balance"
+            />
 
             <motion.p
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.12, ease: EASE_LUXURY }}
-              className="mt-2 sm:mt-4 text-[12px] sm:text-[15px] leading-relaxed text-[#3F3735] max-w-[330px] sm:max-w-[445px]"
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 18, filter: 'blur(4px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 0.72, delay: 0.24, ease: EASE_LUXURY }}
+              className="mt-3 text-[13px] sm:text-[14.5px] leading-relaxed text-[#362C29] max-w-[430px]"
             >
-              <strong className="font-semibold text-[#1D1716]">HİLAL TESİSAT</strong> olarak,
-              doğalgazdan su tesisatına, ısıtma sistemlerinden bakım-onarıma kadar tüm çözümlerde
-              yanınızdayız.
+              <strong className="font-semibold text-[#8E1328]">HİLAL TESİSAT</strong> olarak,
+              doğalgaz projesinden yoğuşmalı kombi bakımına, petek temizliğinden su arıtma ve sıhhi
+              tesisata kadar 7/24 yanınızdayız.
             </motion.p>
 
-            {/* Primary CTA + Minimalist WhatsApp + Intro Video */}
+            {/* Focused Magnetic Action Row */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.18, ease: EASE_LUXURY }}
-              className="mt-4 sm:mt-7 flex flex-wrap items-center gap-2.5 sm:gap-3.5"
+              transition={{ duration: 0.72, delay: 0.34, ease: EASE_LUXURY }}
+              className="mt-5 flex flex-wrap items-center gap-2.5"
             >
-              <Link
-                href="/projelerimiz"
-                className="inline-flex items-center gap-2.5 sm:gap-3 rounded-full burgundy-cta pl-4 pr-2 py-2 sm:pl-6 sm:pr-2.5 sm:py-2.5 text-[11px] sm:text-sm font-medium text-[#FAF7F5] whitespace-nowrap transition-transform duration-150 hover:-translate-y-0.5 active:scale-[0.98]"
-              >
-                <span>Projelerimizi Keşfedin</span>
-                <span className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/15">
-                  <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />
-                </span>
-              </Link>
+              <MagneticAction strength={9}>
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('iletisim')}
+                  className="inline-flex items-center gap-2.5 rounded-full burgundy-cta pl-4 pr-2 py-2 sm:pl-5 sm:pr-2 sm:py-2 text-xs sm:text-[13px] font-medium text-[#FAF7F5] whitespace-nowrap transition-transform duration-150 hover:-translate-y-0.5 active:scale-[0.98]"
+                >
+                  <span>Ücretsiz Keşif & Teklif Al</span>
+                  <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/15">
+                    <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                  </span>
+                </button>
+              </MagneticAction>
 
-              <a
-                href={buildWhatsappHref()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-[#1C5D36]/30 bg-white/90 hover:bg-[#1C5D36] text-[#1C5D36] hover:text-white px-3.5 py-2 sm:px-4.5 sm:py-2.5 text-[11px] sm:text-xs font-semibold shadow-sm backdrop-blur-sm whitespace-nowrap transition-colors duration-150"
-              >
-                <MessageCircle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                <span>WhatsApp</span>
-              </a>
+              <MagneticAction strength={7}>
+                <a
+                  href={buildWhatsappHref()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[#1C5D36]/30 bg-white/95 hover:bg-[#1C5D36] text-[#1C5D36] hover:text-white px-3.5 py-2 text-xs font-semibold shadow-sm whitespace-nowrap transition-colors duration-150"
+                >
+                  <MessageCircle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                  <span>WhatsApp Destek</span>
+                </a>
+              </MagneticAction>
 
-              <button
-                type="button"
-                onClick={() => setShowIntroModal(true)}
-                className="group inline-flex items-center gap-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5E1119] rounded-full pr-1.5 py-0.5"
-              >
-                <span className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/95 border border-[#D8CFC9] shadow-sm text-[#4A0D13] group-hover:scale-105 transition-transform duration-150">
-                  <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-[#4A0D13] ml-0.5" aria-hidden="true" />
-                </span>
-                <span className="text-[10.5px] sm:text-xs font-semibold leading-tight text-[#2B2321]">
-                  Tanıtım Filmi
-                  <br />
-                  <span className="font-normal text-[#5C5350]">İzle</span>
-                </span>
-              </button>
+              <MagneticAction strength={6}>
+                <button
+                  type="button"
+                  onClick={() => setShowIntroModal(true)}
+                  className="group inline-flex items-center gap-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A81830] rounded-full pr-1 py-0.5"
+                >
+                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white border border-[#A81830]/25 shadow-sm text-[#9A152B] group-hover:scale-110 transition-transform duration-200">
+                    <Play className="w-3 h-3 fill-[#9A152B] ml-0.5" aria-hidden="true" />
+                  </span>
+                  <span className="text-[11px] font-semibold leading-tight text-[#251A19]">
+                    Tanıtım Filmi
+                  </span>
+                </button>
+              </MagneticAction>
             </motion.div>
 
-            {/* Mobile Uncropped Full Panoramic Villa + Moon + HİLAL TESİSAT Showcase */}
-            <div className="sm:hidden mt-4 relative">
-              <div className="rounded-2xl overflow-hidden border border-white shadow-[0_22px_48px_-18px_rgba(38,12,14,0.32)] aspect-[16/9.2] bg-[#EAE4DF]">
+            {/* Mobile Scenic Architectural Frame */}
+            <div className="sm:hidden mt-4">
+              <div className="relative rounded-2xl overflow-hidden border border-white/80 shadow-[0_18px_40px_-18px_rgba(32,6,10,0.35)] aspect-[16/10] bg-[#1A0D10]">
                 <SafeImage
                   src={SITE_IMAGES.heroVilla}
-                  alt="Hilal Tesisat Modern Mimari Villa ve Marka Cephesi"
-                  className="w-full h-full object-cover object-center contrast-[1.03] saturate-[1.06]"
+                  alt="Hilal Tesisat Modern Mimari Villa"
+                  className="w-full h-full object-cover object-right scale-[1.44] origin-right contrast-[1.04] saturate-[1.06]"
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/25 rounded-2xl"
                 />
               </div>
             </div>
 
-            {/* Frosted Pearl Stats Dock */}
+            {/* Compact Architectural Proof Ribbon with Rolling Odometer Counters */}
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.24, ease: EASE_LUXURY }}
-              className="relative z-10 -mt-5 mx-2 sm:mx-0 sm:mt-10 lg:mt-14 pearl-glass rounded-xl sm:rounded-2xl px-3 py-2.5 sm:px-5 sm:py-4 grid grid-cols-3 gap-2 sm:gap-5 max-w-full sm:max-w-[495px]"
+              transition={{ duration: 0.78, delay: 0.44, ease: EASE_LUXURY }}
+              className="mt-4 sm:mt-7 burgundy-vellum-frame rounded-xl sm:rounded-2xl px-3.5 py-2.5 sm:px-4 sm:py-3 grid grid-cols-3 gap-2 sm:gap-4 max-w-[445px]"
             >
-              <div className="flex items-center gap-2 sm:gap-3">
-                <span className="inline-flex items-center justify-center w-6 h-6 sm:w-9 sm:h-9 rounded-full bg-[#4A0D13]/10 text-[#4A0D13] shrink-0">
-                  <Award className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />
-                </span>
+              <div className="flex items-center gap-2">
+                <Award className="w-4 h-4 text-[#A81830] shrink-0" aria-hidden="true" />
                 <div>
-                  <div className="font-sans text-sm sm:text-2xl font-bold tracking-tight leading-none text-[#1D1716] tabular-nums">
-                    {SITE_INFO.experienceYears}
+                  <div className="font-sans text-sm sm:text-lg font-bold tracking-tight leading-none text-[#1D1716] tabular-nums">
+                    <AnimatedCounter target={15} suffix="+" />
                   </div>
-                  <div className="mt-0.5 text-[9px] sm:text-[11px] text-[#57504D] leading-tight">
+                  <div className="mt-0.5 text-[9.5px] sm:text-[10.5px] text-[#554A47] leading-tight">
                     Yıllık Tecrübe
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 sm:gap-3 border-l border-[#D8D0CA] pl-2 sm:pl-4">
-                <span className="inline-flex items-center justify-center w-6 h-6 sm:w-9 sm:h-9 rounded-full bg-[#4A0D13]/10 text-[#4A0D13] shrink-0">
-                  <Users className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />
-                </span>
+              <div className="flex items-center gap-2 border-l border-[#9A152B]/18 pl-2.5 sm:pl-3.5">
+                <Users className="w-4 h-4 text-[#A81830] shrink-0" aria-hidden="true" />
                 <div>
-                  <div className="font-sans text-sm sm:text-2xl font-bold tracking-tight leading-none text-[#1D1716] tabular-nums">
-                    {SITE_INFO.happyClients}
+                  <div className="font-sans text-sm sm:text-lg font-bold tracking-tight leading-none text-[#1D1716] tabular-nums">
+                    <AnimatedCounter target={1000} suffix="+" />
                   </div>
-                  <div className="mt-0.5 text-[9px] sm:text-[11px] text-[#57504D] leading-tight">
+                  <div className="mt-0.5 text-[9.5px] sm:text-[10.5px] text-[#554A47] leading-tight">
                     Mutlu Müşteri
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 sm:gap-3 border-l border-[#D8D0CA] pl-2 sm:pl-4">
-                <span className="inline-flex items-center justify-center w-6 h-6 sm:w-9 sm:h-9 rounded-full bg-[#4A0D13]/10 text-[#4A0D13] shrink-0">
-                  <Headphones className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />
-                </span>
+              <div className="flex items-center gap-2 border-l border-[#9A152B]/18 pl-2.5 sm:pl-3.5">
+                <Headphones className="w-4 h-4 text-[#A81830] shrink-0" aria-hidden="true" />
                 <div>
-                  <div className="font-sans text-sm sm:text-2xl font-bold tracking-tight leading-none text-[#1D1716] tabular-nums">
+                  <div className="font-sans text-sm sm:text-lg font-bold tracking-tight leading-none text-[#1D1716] tabular-nums">
                     {SITE_INFO.supportHours}
                   </div>
-                  <div className="mt-0.5 text-[9px] sm:text-[11px] text-[#57504D] leading-tight">
+                  <div className="mt-0.5 text-[9.5px] sm:text-[10.5px] text-[#554A47] leading-tight">
                     Teknik Destek
                   </div>
                 </div>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* 2. HİZMETLERİMİZ (4x2 CARDS + /hizmetler DEDICATED PAGE LINK) */}
-      <section id="hizmetler" className="relative z-10 py-10 sm:py-18 lg:py-24 overflow-hidden">
-        <div className="mx-auto max-w-[1280px] px-3.5 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 lg:gap-12 items-start">
-            <div className="lg:col-span-4 flex flex-col justify-between">
+      {/* KINETIC EDITORIAL MARQUEE #1 (SCROLL-VELOCITY REACTIVE) */}
+      <KineticEditorialMarquee
+        variant="crimson"
+        items={[
+          'Başkentgaz Yetkili Mühendislik',
+          'Yoğuşmalı Kombi Bakımı',
+          'İlaçlı Petek Temizliği',
+          'Su Arıtma Sistemleri',
+          '7/24 Pursaklar & Ankara',
+          'Kırmadan Kaçak Tespiti',
+        ]}
+      />
+
+      {/* 2. HİZMETLERİMİZ (INTERACTIVE SINGLE-PAGE FILTER + 4x2 GRID) */}
+      <section id="hizmetler" className="relative z-10 scroll-mt-24 py-12 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 items-start">
+            <div className="lg:col-span-4 space-y-4">
               <EditorialReveal>
-                <div className="flex items-center gap-2.5 mb-2 sm:mb-3">
-                  <span className="text-[11px] sm:text-xs font-semibold tracking-wide text-[#7A353B]">
-                    Hizmetlerimiz
-                  </span>
-                  <span className="h-[1px] w-12 sm:w-16 bg-[#B99E96]" aria-hidden="true" />
+                <div className="space-y-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-[11px] font-semibold tracking-wide text-[#A81830]">
+                      01 · Hizmetlerimiz
+                    </span>
+                    <span className="h-[1px] w-10 bg-[#8C5B4D]/70" aria-hidden="true" />
+                  </div>
+                  <SplitTextReveal
+                    as="h2"
+                    text="Profesyonel Tesisat Hizmetleri"
+                    className="font-display text-2xl sm:text-[32px] lg:text-[34px] font-semibold leading-[1.12] text-[#1A1312] text-balance"
+                  />
+                  <p className="text-[13px] sm:text-sm leading-relaxed text-[#463D3A]">
+                    Başkentgaz onaylı doğalgaz mühendisliğinden yoğuşmalı kombi bakımına ve su
+                    arıtmaya kadar garantili çözümler. Detaylar için bir hizmete tıklayın.
+                  </p>
                 </div>
-                <h2 className="font-display text-2xl sm:text-[36px] lg:text-[40px] font-semibold leading-[1.12] text-[#1D1716] text-balance">
-                  Profesyonel Tesisat Hizmetleri
-                </h2>
-                <p className="mt-2 sm:mt-4 text-xs sm:text-[15px] leading-relaxed text-[#514946]">
-                  Modern yaşamın gereksinimlerini karşılayan, kaliteli ve garantili hizmetlerimizle
-                  her zaman yanınızdayız.
-                </p>
 
-                <div className="mt-4 sm:mt-5 flex flex-wrap items-center gap-2">
-                  <Link
-                    href="/hizmetler"
-                    className="inline-flex items-center gap-2 rounded-full bg-white/90 border border-[#D8CFC9] px-4 py-1.5 sm:px-5 sm:py-2 text-[11px] sm:text-xs font-semibold text-[#2A1F1D] shadow-sm hover:border-[#4A0D13] hover:text-[#4A0D13] transition-colors"
-                  >
-                    <span>Tüm Hizmetleri Gör</span>
-                    <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
-                  </Link>
-
-                  <a
-                    href={buildWhatsappHref('Tesisat hizmetleri')}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-full border border-[#1C5D36]/30 bg-white/90 px-3.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs font-semibold text-[#1C5D36] hover:bg-[#1C5D36] hover:text-white transition-colors"
-                  >
-                    <MessageCircle className="w-3.5 h-3.5" aria-hidden="true" />
-                    <span>WhatsApp</span>
-                  </a>
+                {/* Compact Segmented Filter Controls with Sliding Spring Pill */}
+                <div
+                  role="group"
+                  aria-label="Hizmet kategorileri"
+                  className="mt-4 inline-flex flex-wrap items-center gap-1 rounded-xl bg-white/80 p-1 border border-[#4A0D13]/12 shadow-sm"
+                >
+                  {SERVICE_FILTERS.map((tab) => {
+                    const active = serviceFilter === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        onClick={() => setServiceFilter(tab.id)}
+                        aria-pressed={active}
+                        className={`relative px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium whitespace-nowrap transition-colors ${
+                          active
+                            ? 'text-white'
+                            : 'text-[#4B4340] hover:text-[#1A1312]'
+                        }`}
+                      >
+                        {active ? (
+                          <motion.span
+                            layoutId="home-service-filter-pill"
+                            transition={SPRING_ARCHITECTURAL}
+                            className="absolute inset-0 rounded-lg burgundy-cta"
+                          />
+                        ) : null}
+                        <span className="relative z-10">{tab.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </EditorialReveal>
 
-              <ParallaxLayer offset={14} className="mt-4 lg:mt-5 flex justify-start">
-                <div className="overflow-hidden mix-blend-multiply max-w-[180px] sm:max-w-[260px] lg:max-w-[330px] [mask-image:radial-gradient(closest-side,black_52%,transparent_94%)]">
+              <ParallaxLayer offset={20} className="hidden lg:flex justify-start pt-2">
+                <div className="overflow-hidden mix-blend-multiply max-w-[260px] [mask-image:radial-gradient(closest-side,black_52%,transparent_94%)]">
                   <SafeImage
                     src={SITE_IMAGES.waterSplash}
                     alt="Kristal berraklığında su tesisatı akış görseli"
-                    className="w-full h-auto object-cover brightness-[1.06] contrast-[1.08] saturate-[1.16]"
+                    className="w-full h-auto object-cover brightness-[1.06] contrast-[1.08] saturate-[1.14]"
                   />
                 </div>
               </ParallaxLayer>
             </div>
 
-            {/* Right 4x2 Seamless Pearl Service Cards */}
-            <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
-              {featuredServices.map((service, index) => (
-                <EditorialReveal key={service.slug} delay={index * 0.03} y={10}>
-                  <LuxuryInteractiveCard className="h-full rounded-xl sm:rounded-2xl bg-gradient-to-b from-white/95 to-[#EFEBE8]/92 border border-white ring-1 ring-[#DFD6CE]/55 shadow-[0_12px_30px_-16px_rgba(54,8,13,0.18)] hover:shadow-[0_22px_40px_-18px_rgba(74,13,19,0.28)]">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedService(service)}
-                      className="group w-full h-full text-center p-2.5 sm:p-4 flex flex-col items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5E1119] rounded-xl sm:rounded-2xl"
-                    >
-                      <div className="w-full aspect-[4/3] sm:aspect-square flex items-center justify-center overflow-hidden mb-1.5 sm:mb-2.5">
-                        <SafeImage
-                          src={service.image}
-                          alt={service.title}
-                          className="w-[88%] h-[88%] object-contain mix-blend-multiply contrast-[1.08] saturate-[1.12] [mask-image:radial-gradient(closest-side,black_58%,transparent_96%)] transition-transform duration-300 group-hover:scale-105"
-                        />
-                      </div>
-                      <span className="text-[11px] sm:text-[13px] font-semibold leading-tight text-[#251E1D] group-hover:text-[#4A0D13] transition-colors">
-                        {service.shortTitle}
-                      </span>
-                    </button>
-                  </LuxuryInteractiveCard>
-                </EditorialReveal>
-              ))}
-
-              {/* 8th Card: Link to Dedicated Services Page */}
-              <EditorialReveal delay={0.24} y={10}>
-                <LuxuryInteractiveCard className="h-full rounded-xl sm:rounded-2xl bg-gradient-to-b from-white/95 to-[#EFEBE8]/92 border border-white ring-1 ring-[#DFD6CE]/55 shadow-[0_12px_30px_-16px_rgba(54,8,13,0.18)] hover:border-[#4A0D13]/35">
-                  <Link
-                    href="/hizmetler"
-                    className="group w-full h-full text-center p-2.5 sm:p-4 flex flex-col items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5E1119] rounded-xl sm:rounded-2xl"
+            {/* Right Interactive Service Cards with Spring Layout Reordering */}
+            <motion.div
+              layout
+              className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-3.5"
+            >
+              <AnimatePresence mode="popLayout">
+                {visibleServices.map((service, index) => (
+                  <motion.div
+                    key={service.slug}
+                    layout
+                    initial={prefersReducedMotion ? false : { opacity: 0, y: 24, scale: 0.96 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true, amount: 0.12 }}
+                    exit={{ opacity: 0, scale: 0.94 }}
+                    transition={{
+                      duration: 0.52,
+                      delay: Math.min(index * 0.04, 0.24),
+                      ease: EASE_LUXURY,
+                    }}
+                    className="h-full"
                   >
-                    <div className="w-full aspect-[4/3] sm:aspect-square flex items-center justify-center overflow-hidden mb-1.5 sm:mb-2.5">
-                      <SafeImage
-                        src={SITE_IMAGES.serviceDrainTurbine}
-                        alt="Tüm Tesisat Çözümleri"
-                        className="w-[86%] h-[86%] object-contain mix-blend-multiply contrast-[1.08] saturate-[1.12] [mask-image:radial-gradient(closest-side,black_58%,transparent_96%)] transition-transform duration-300 group-hover:scale-105"
-                      />
-                    </div>
-                    <span className="inline-flex items-center gap-1 text-[11px] sm:text-[13px] font-semibold text-[#4A0D13]">
-                      <span>Daha Fazlası</span>
-                      <ArrowRight
-                        className="w-3 h-3 sm:w-3.5 sm:h-3.5 transition-transform group-hover:translate-x-0.5"
-                        aria-hidden="true"
-                      />
-                    </span>
-                  </Link>
-                </LuxuryInteractiveCard>
-              </EditorialReveal>
-            </div>
+                    <LuxuryInteractiveCard className="h-full rounded-2xl bg-gradient-to-b from-white/95 to-[#F1ECE8]/92 border border-white ring-1 ring-[#4A0D13]/10 shadow-[0_10px_24px_-16px_rgba(54,8,13,0.16)] hover:ring-[#A81830]/35">
+                      <button
+                        type="button"
+                        data-cursor="DETAY"
+                        onClick={() => setSelectedService(service)}
+                        className="group w-full h-full text-center p-3 sm:p-3.5 flex flex-col items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A81830] rounded-2xl"
+                      >
+                        <div className="w-full aspect-[4/3] sm:aspect-square flex items-center justify-center overflow-hidden mb-1.5">
+                          <SafeImage
+                            src={service.image}
+                            alt={service.title}
+                            className="w-[86%] h-[86%] object-contain mix-blend-multiply contrast-[1.06] saturate-[1.1] [mask-image:radial-gradient(closest-side,black_58%,transparent_96%)] transition-transform duration-500 ease-out group-hover:scale-110"
+                          />
+                        </div>
+                        <div className="space-y-0.5">
+                          <span className="block text-[11.5px] sm:text-[12.5px] font-semibold leading-tight text-[#231B1A] group-hover:text-[#9E162C] transition-colors">
+                            {service.shortTitle}
+                          </span>
+                          <span className="block text-[10px] text-[#6B5F5B]">
+                            {service.responseTime}
+                          </span>
+                        </div>
+                      </button>
+                    </LuxuryInteractiveCard>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* 3. PROJELERİMİZ (ORGANIC ARCHED PHOTO + OVERLAPPING 4 THUMBNAILS + /projelerimiz LINK) */}
-      <section id="projelerimiz" className="relative z-10 py-10 sm:py-18 lg:py-24">
-        <div className="mx-auto max-w-[1280px] px-3.5 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 lg:gap-12 items-center">
-            <EditorialReveal className="lg:col-span-4 space-y-2.5 sm:space-y-4">
+      {/* 3. PROJELERİMİZ (LUXURY ARCHED GALLERY + OVERLAPPING THUMBNAILS) */}
+      <section id="projeler" className="relative z-10 scroll-mt-24 py-12 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 items-center">
+            <EditorialReveal className="lg:col-span-4 space-y-3">
               <div className="flex items-center gap-2.5">
-                <span className="text-[11px] sm:text-xs font-semibold tracking-wide text-[#7A353B]">
-                  Projelerimiz
+                <span className="text-[11px] font-semibold tracking-wide text-[#A81830]">
+                  02 · Projelerimiz
                 </span>
-                <span className="h-[1px] w-12 sm:w-16 bg-[#B99E96]" aria-hidden="true" />
+                <span className="h-[1px] w-10 bg-[#8C5B4D]/70" aria-hidden="true" />
               </div>
-              <h2 className="font-display text-2xl sm:text-[36px] lg:text-[40px] font-semibold leading-[1.12] text-[#1D1716] text-balance">
-                Gerçekleştirdiğimiz Özel Projeler
-              </h2>
-              <p className="text-xs sm:text-[15px] leading-relaxed text-[#514946]">
-                Kaliteyi ve güveni bir araya getirdiğimiz projelerimizle yaşam alanlarınıza değer
-                katıyoruz.
-              </p>
+              <SplitTextReveal
+                as="h2"
+                text="Gerçekleştirdiğimiz Özel Projeler"
+                className="font-display text-2xl sm:text-[32px] lg:text-[34px] font-semibold leading-[1.12] text-[#1A1312] text-balance"
+              />
 
-              <div className="pt-1 sm:pt-2 flex flex-wrap items-center gap-2">
-                <Link
-                  href="/projelerimiz"
-                  className="inline-flex items-center gap-2 rounded-full bg-white/90 border border-[#D8CFC9] px-4 py-1.5 sm:px-5 sm:py-2 text-[11px] sm:text-xs font-semibold text-[#2A1F1D] shadow-sm hover:border-[#4A0D13] hover:text-[#4A0D13] transition-colors"
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeProject.id}
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.32, ease: EASE_LUXURY }}
+                  className="space-y-2.5"
                 >
-                  <span>Tüm Projeleri Gör</span>
-                  <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
-                </Link>
+                  <p className="text-[13px] sm:text-sm leading-relaxed text-[#463D3A]">
+                    {activeProject.description}
+                  </p>
+                  <div className="pt-0.5 text-xs font-medium text-[#9A152B]">
+                    {activeProject.metrics.join(' · ')}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
 
-                <a
-                  href={buildWhatsappHref(activeProject.title)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[#1C5D36]/30 bg-white/90 px-3.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs font-semibold text-[#1C5D36] hover:bg-[#1C5D36] hover:text-white transition-colors"
-                >
-                  <MessageCircle className="w-3.5 h-3.5" aria-hidden="true" />
-                  <span>WhatsApp</span>
-                </a>
+              <div className="pt-2 flex flex-wrap items-center gap-2">
+                <MagneticAction strength={8}>
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection('iletisim')}
+                    className="inline-flex items-center gap-1.5 rounded-full burgundy-cta px-4 py-2 text-xs font-medium text-white transition-transform hover:-translate-y-0.5 whitespace-nowrap"
+                  >
+                    <span>Benzer Proje Teklifi Al</span>
+                    <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                  </button>
+                </MagneticAction>
+
+                <MagneticAction strength={6}>
+                  <a
+                    href={buildWhatsappHref(activeProject.title)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-[#1C5D36]/30 bg-white px-3.5 py-2 text-xs font-semibold text-[#1C5D36] hover:bg-[#1C5D36] hover:text-white transition-colors whitespace-nowrap"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>WhatsApp</span>
+                  </a>
+                </MagneticAction>
+
+                <MagneticAction strength={6}>
+                  <a
+                    href={SITE_INFO.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-[#B81B35]/30 bg-white px-3.5 py-2 text-xs font-semibold text-[#9E162C] hover:bg-[#9E162C] hover:text-white transition-colors whitespace-nowrap"
+                  >
+                    <Instagram className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>Instagram</span>
+                  </a>
+                </MagneticAction>
               </div>
             </EditorialReveal>
 
             <div className="lg:col-span-8 relative">
-              <div className="relative rounded-tl-[76px] rounded-bl-[56px] rounded-tr-[24px] rounded-br-[24px] sm:rounded-tl-[175px] sm:rounded-bl-[125px] sm:rounded-tr-[36px] sm:rounded-br-[36px] overflow-hidden shadow-[0_26px_60px_-28px_rgba(38,12,14,0.34)] border-2 border-white/85 bg-[#E7E1DC] aspect-[16/9.5]">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeProject.id}
-                    initial={{ opacity: 0.45, scale: 1.015 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0.45 }}
-                    transition={{ duration: 0.35, ease: EASE_LUXURY }}
-                    className="absolute inset-0"
-                  >
-                    <SafeImage
-                      src={activeProject.image}
-                      alt={activeProject.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </motion.div>
-                </AnimatePresence>
-              </div>
+              <CurtainImageReveal
+                className="relative rounded-tl-[64px] rounded-bl-[44px] rounded-tr-[20px] rounded-br-[20px] sm:rounded-tl-[135px] sm:rounded-bl-[96px] sm:rounded-tr-[28px] sm:rounded-br-[28px] shadow-[0_24px_54px_-26px_rgba(38,12,14,0.34)] border border-white/90 bg-[#E7E1DC] aspect-[16/9.6]"
+              >
+                <div data-cursor="İNCELE" className="relative w-full h-full">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeProject.id}
+                      initial={prefersReducedMotion ? false : { opacity: 0.25, scale: 1.07 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0.2, scale: 0.98 }}
+                      transition={{ duration: 0.55, ease: EASE_LUXURY }}
+                      className="absolute inset-0"
+                    >
+                      <SafeImage
+                        src={activeProject.image}
+                        alt={activeProject.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </motion.div>
+                  </AnimatePresence>
 
-              <div className="relative z-10 -mt-7 sm:-mt-14 mx-1 sm:mx-8 flex items-center gap-1.5 sm:gap-3">
-                <button
-                  type="button"
-                  onClick={prevProject}
-                  aria-label="Önceki proje"
-                  className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[#36080D] text-white shadow-md hover:bg-[#5E1119] transition-colors shrink-0"
-                >
-                  <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </button>
+                  <a
+                    href={SITE_INFO.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Projelerimizi Instagram'da incele: ${SITE_INFO.instagramHandle}`}
+                    className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-[#4A0915]/78 hover:bg-[#9E162C] border border-[#E9D1C0]/45 px-3 py-1.5 text-[11px] font-medium text-[#FAF5F0] backdrop-blur-md shadow-lg transition-all hover:scale-[1.03]"
+                  >
+                    <Instagram className="w-3.5 h-3.5 text-[#F3D9C7]" aria-hidden="true" />
+                    <span>{SITE_INFO.instagramHandle}</span>
+                  </a>
+                </div>
+              </CurtainImageReveal>
+
+              <div className="relative z-10 -mt-7 sm:-mt-12 mx-1 sm:mx-6 flex items-center gap-1.5 sm:gap-2.5">
+                <MagneticAction strength={6}>
+                  <button
+                    type="button"
+                    onClick={prevProject}
+                    aria-label="Önceki proje"
+                    className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#7A1023] text-white shadow-md hover:bg-[#A81830] transition-colors shrink-0"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                </MagneticAction>
 
                 <div className="grid grid-cols-4 gap-1.5 sm:gap-3 flex-1">
                   {PROJECTS.map((proj, idx) => {
                     const isSelected = idx === activeProjectIdx;
                     return (
-                      <button
+                      <motion.button
                         key={proj.id}
                         type="button"
+                        whileHover={prefersReducedMotion ? undefined : { y: -3 }}
+                        whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
                         onClick={() => setActiveProjectIdx(idx)}
                         aria-label={`${proj.title} projesini göster`}
                         aria-pressed={isSelected}
-                        className={`relative rounded-lg sm:rounded-2xl overflow-hidden aspect-[4/3] border-2 transition-all duration-200 shadow-lg ${
+                        className={`relative rounded-lg sm:rounded-xl overflow-hidden aspect-[4/3] border-2 transition-colors duration-200 shadow-md ${
                           isSelected
-                            ? 'border-[#5E1119] scale-[1.03]'
+                            ? 'border-[#A81830] scale-[1.03]'
                             : 'border-white opacity-90 hover:opacity-100'
                         }`}
                       >
@@ -435,53 +615,61 @@ export function HomeLanding() {
                           alt={proj.title}
                           className="w-full h-full object-cover"
                         />
-                      </button>
+                      </motion.button>
                     );
                   })}
                 </div>
 
-                <button
-                  type="button"
-                  onClick={nextProject}
-                  aria-label="Sonraki proje"
-                  className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[#36080D] text-white shadow-md hover:bg-[#5E1119] transition-colors shrink-0"
-                >
-                  <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </button>
+                <MagneticAction strength={6}>
+                  <button
+                    type="button"
+                    onClick={nextProject}
+                    aria-label="Sonraki proje"
+                    className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#7A1023] text-white shadow-md hover:bg-[#A81830] transition-colors shrink-0"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </MagneticAction>
               </div>
 
-              <div className="mt-3 flex flex-col items-center gap-1.5 text-center">
-                <div className="flex items-center gap-1.5">
-                  {PROJECTS.map((proj, idx) => (
-                    <button
-                      key={proj.id}
-                      type="button"
-                      aria-label={`${idx + 1}. projeyi seç`}
-                      onClick={() => setActiveProjectIdx(idx)}
-                      className={`h-1.5 rounded-full transition-all ${
-                        idx === activeProjectIdx
-                          ? 'w-5 bg-[#4A0D13]'
-                          : 'w-1.5 bg-[#C5BBB4] hover:bg-[#8E7D76]'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <p className="text-[11px] sm:text-xs text-[#23191A] font-medium">
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-center text-xs text-[#3C3330] font-medium">
+                <span>
                   {activeProject.title} ·{' '}
-                  <span className="text-[#554D4A] font-normal">{activeProject.location}</span>
-                </p>
+                  <span className="text-[#6B5F5B] font-normal">
+                    {activeProject.location} · {activeProject.year}
+                  </span>
+                </span>
+                <span aria-hidden="true" className="text-[#B81B35]/40">
+                  |
+                </span>
+                <a
+                  href={SITE_INFO.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[#9E162C] hover:text-[#660D1C] font-semibold underline-offset-4 hover:underline"
+                >
+                  <Instagram className="w-3.5 h-3.5" aria-hidden="true" />
+                  <span>Instagram’da Tüm Projeler</span>
+                </a>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. NEDEN HİLAL TESİSAT? (/kurumsal DEDICATED PAGE LINK) */}
-      <section id="kurumsal" className="relative z-10 py-10 sm:py-18 lg:py-24 overflow-hidden">
-        <div className="mx-auto max-w-[1280px] px-3.5 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-center">
+      {/* 4. MID-PAGE HORIZONTAL VERTICAL-VIDEO SHOWCASE INSIDE CUSTOM IPHONE PRO FRAME */}
+      <FieldReelsShowcase />
+
+      {/* 5. KURUMSAL & NEDEN HİLAL TESİSAT? (FULL CORPORATE SECTION ON SINGLE PAGE) */}
+      <section id="kurumsal" className="relative z-10 scroll-mt-24 py-12 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-9 items-center">
             <div className="lg:col-span-4 flex justify-center">
-              <ParallaxLayer offset={14} className="w-[210px] sm:w-[300px] lg:w-[340px]">
+              <ParallaxLayer
+                offset={28}
+                rotateRange={[-12, 12]}
+                className="w-[190px] sm:w-[270px] lg:w-[300px]"
+              >
                 <div className="mix-blend-multiply [mask-image:radial-gradient(closest-side,black_66%,transparent_98%)]">
                   <SafeImage
                     src={SITE_IMAGES.emblemMetal}
@@ -492,362 +680,377 @@ export function HomeLanding() {
               </ParallaxLayer>
             </div>
 
-            <EditorialReveal className="lg:col-span-4 space-y-3 sm:space-y-5">
-              <h2 className="font-display text-2xl sm:text-[36px] lg:text-[42px] font-semibold leading-[1.1] text-[#1D1716]">
-                Neden Hilal Tesisat?
-              </h2>
-              <p className="text-xs sm:text-[15px] leading-relaxed text-[#514946]">
-                Deneyim, kalite ve güvenin adresi olan Hilal Tesisat, her projede en iyisini sunmak
-                için çalışıyor.
+            <EditorialReveal className="lg:col-span-4 space-y-3">
+              <div className="flex items-center gap-2.5">
+                <span className="text-[11px] font-semibold tracking-wide text-[#A81830]">
+                  03 · Kurumsal Güvence
+                </span>
+                <span className="h-[1px] w-10 bg-[#8C5B4D]/70" aria-hidden="true" />
+              </div>
+              <SplitTextReveal
+                as="h2"
+                text="Neden Hilal Tesisat?"
+                className="font-display text-2xl sm:text-[32px] lg:text-[34px] font-semibold leading-[1.12] text-[#1A1312]"
+              />
+              <p className="text-[13px] sm:text-sm leading-relaxed text-[#463D3A]">
+                15 yılı aşkın saha tecrübemiz ve yetkili mühendislik kadromuzla Ankara’nın her
+                ilçesinde kalıcı, güvenli ve şeffaf fiyatlı tesisat çözümleri sunuyoruz.
               </p>
 
-              <ul className="space-y-2 sm:space-y-3 pt-0.5">
+              <ul className="space-y-2 pt-1">
                 {[
-                  'Uzman ve Deneyimli Kadro',
-                  '7/24 Teknik Destek',
-                  'Garantili Hizmet',
-                  'Uygun Fiyat Politikası',
+                  'Başkentgaz Onaylı Sertifikalı Kadro',
+                  '7/24 Acil Teknik Servis & Hızlı Müdahale',
+                  '1–2 Yıl Yazılı İşçilik ve Parça Garantisi',
+                  'Keşif Öncesi Şeffaf Fiyatlandırma',
                 ].map((item) => (
                   <li
                     key={item}
-                    className="flex items-center gap-2.5 sm:gap-3 text-xs sm:text-sm font-medium text-[#2A2220]"
+                    className="flex items-center gap-2.5 text-xs sm:text-[13px] font-medium text-[#241B19]"
                   >
-                    <span className="inline-flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#4A0D13] text-white shrink-0">
-                      <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3" aria-hidden="true" />
+                    <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#9E162C] text-white shrink-0">
+                      <Check className="w-2.5 h-2.5" aria-hidden="true" />
                     </span>
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
-
-              <div className="pt-1.5 sm:pt-3 flex flex-wrap items-center gap-2.5">
-                <Link
-                  href="/kurumsal"
-                  className="inline-flex items-center gap-2 rounded-full burgundy-cta px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-medium text-white transition-transform hover:-translate-y-0.5"
-                >
-                  <span>Hakkımızda</span>
-                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                </Link>
-
-                <a
-                  href={buildWhatsappHref('Kurumsal teklif ve bilgi')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[#1C5D36]/30 bg-white/90 px-4 py-2 sm:py-3 text-xs font-semibold text-[#1C5D36] hover:bg-[#1C5D36] hover:text-white transition-colors"
-                >
-                  <MessageCircle className="w-3.5 h-3.5" aria-hidden="true" />
-                  <span>WhatsApp</span>
-                </a>
-              </div>
             </EditorialReveal>
 
             <EditorialReveal delay={0.08} className="lg:col-span-4">
-              <div className="pearl-glass rounded-2xl sm:rounded-3xl p-4 sm:p-6 relative overflow-hidden min-h-[195px] sm:min-h-[290px] flex flex-col justify-between">
-                <div className="relative z-10 space-y-3 sm:space-y-4 max-w-[55%]">
-                  <div className="flex items-center gap-2.5 sm:gap-3">
-                    <span className="inline-flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#4A0D13]/10 text-[#4A0D13] shrink-0">
-                      <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                    </span>
+              <LuxuryInteractiveCard
+                tiltMaxDeg={4}
+                className="burgundy-vellum-frame rounded-2xl p-5 min-h-[210px] sm:min-h-[255px]"
+              >
+                <div className="relative h-full min-h-[175px] sm:min-h-[215px] flex flex-col justify-between">
+                  <div className="relative z-10 space-y-3.5 max-w-[54%]">
                     <div>
-                      <div className="font-sans text-lg sm:text-2xl font-bold tracking-tight text-[#1D1716] leading-none tabular-nums">
-                        15+
+                      <div className="font-sans text-xl sm:text-2xl font-bold tracking-tight text-[#1D1716] leading-none tabular-nums">
+                        <AnimatedCounter target={15} suffix="+" />
                       </div>
-                      <div className="text-[10px] sm:text-[11px] text-[#5A5350]">Yıllık Tecrübe</div>
+                      <div className="text-[11px] text-[#554A47] mt-0.5">Yıllık Mühendislik</div>
                     </div>
-                  </div>
-
-                  <div className="flex items-center gap-2.5 sm:gap-3">
-                    <span className="inline-flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#4A0D13]/10 text-[#4A0D13] shrink-0">
-                      <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                    </span>
                     <div>
-                      <div className="font-sans text-lg sm:text-2xl font-bold tracking-tight text-[#1D1716] leading-none tabular-nums">
-                        1000+
+                      <div className="font-sans text-xl sm:text-2xl font-bold tracking-tight text-[#1D1716] leading-none tabular-nums">
+                        <AnimatedCounter target={1000} suffix="+" />
                       </div>
-                      <div className="text-[10px] sm:text-[11px] text-[#5A5350]">Mutlu Müşteri</div>
+                      <div className="text-[11px] text-[#554A47] mt-0.5">Teslim Edilen Proje</div>
                     </div>
                   </div>
-                </div>
 
-                <div className="absolute right-0 bottom-0 top-1 w-[52%] pointer-events-none flex justify-end">
-                  <div className="relative w-full h-full">
-                    <SafeImage
-                      src={SITE_IMAGES.technicianPortrait}
-                      alt="Hilal Tesisat Uzman Tekniker"
-                      className="w-full h-full object-cover object-top mix-blend-multiply [mask-image:linear-gradient(to_right,transparent_0%,black_32%,black_100%)]"
-                    />
-                    <div
-                      aria-hidden="true"
-                      className="absolute top-[30%] left-[56%] -translate-x-1/2 scale-[0.30] sm:scale-[0.38] opacity-80 pointer-events-none"
-                    >
-                      <HilalLogo variant="light" />
+                  <div className="absolute right-0 bottom-0 top-0 w-[52%] pointer-events-none flex justify-end">
+                    <div className="relative w-full h-full">
+                      <SafeImage
+                        src={SITE_IMAGES.technicianPortrait}
+                        alt="Hilal Tesisat Uzman Tekniker"
+                        className="w-full h-full object-cover object-top mix-blend-multiply [mask-image:linear-gradient(to_right,transparent_0%,black_32%,black_100%)]"
+                      />
+                      <div
+                        aria-hidden="true"
+                        className="absolute top-[30%] left-[56%] -translate-x-1/2 scale-[0.28] sm:scale-[0.34] opacity-80 pointer-events-none"
+                      >
+                        <HilalLogo variant="light" />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="relative z-10 pt-5 sm:pt-8">
-                  <span className="font-display italic text-base sm:text-xl text-[#4A0D13]/85">
-                    Hilal Tesisat
-                  </span>
+                  <div className="relative z-10 pt-4">
+                    <span className="font-display italic text-base sm:text-lg text-[#9E162C]">
+                      Hilal Tesisat
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </LuxuryInteractiveCard>
             </EditorialReveal>
+          </div>
+
+          {/* 3 Compact Corporate Engineering Standards with 3D Tilt */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {CORPORATE_PILLARS.map((pillar, idx) => {
+              const Icon = pillar.icon;
+              return (
+                <EditorialReveal key={pillar.title} delay={idx * 0.08} y={24}>
+                  <LuxuryInteractiveCard
+                    tiltMaxDeg={4.5}
+                    className="h-full rounded-2xl bg-white/85 border border-[#9E162C]/14 shadow-[0_8px_22px_-16px_rgba(135,18,37,0.18)]"
+                  >
+                    <div className="h-full p-5 space-y-2">
+                      <div className="flex items-center gap-2.5">
+                        <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-[#9E162C]/12 text-[#9E162C] shrink-0">
+                          <Icon className="w-4 h-4" aria-hidden="true" />
+                        </span>
+                        <h3 className="font-display text-lg font-semibold text-[#1A1312] leading-snug">
+                          {pillar.title}
+                        </h3>
+                      </div>
+                      <p className="text-xs sm:text-[13px] text-[#4C4340] leading-relaxed">
+                        {pillar.description}
+                      </p>
+                    </div>
+                  </LuxuryInteractiveCard>
+                </EditorialReveal>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* 5. DARK BURGUNDY S-CURVE WAVE CONTACT BAND (/iletisim LINK + WHATSAPP) */}
-      <section className="relative z-10 py-14 sm:py-20 lg:py-24 overflow-hidden">
+      {/* 6. MÜŞTERİLERİMİZİN GÖRÜŞLERİ (AWWWARDS 3D SWIPEABLE INTERACTIVE DECK) */}
+      <AwwwardsTestimonials />
+
+      {/* 7. SIKÇA SORULAN SORULAR (SINGLE-PAGE INTERACTIVE FAQ SECTION) */}
+      <section id="sss" className="relative z-10 scroll-mt-24 py-12 sm:py-16">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 mb-6">
+          <EditorialReveal className="space-y-1.5 max-w-2xl">
+            <div className="flex items-center gap-2.5">
+              <span className="text-[11px] font-semibold tracking-wide text-[#A81830]">
+                05 · Sıkça Sorulan Sorular
+              </span>
+              <span className="h-[1px] w-10 bg-[#8C5B4D]/70" aria-hidden="true" />
+            </div>
+            <SplitTextReveal
+              as="h2"
+              text="Merak Edilen Teknik Detaylar"
+              className="font-display text-2xl sm:text-[32px] font-semibold leading-[1.12] text-[#1A1312]"
+            />
+          </EditorialReveal>
+        </div>
+        <FaqAccordion />
+      </section>
+
+      {/* KINETIC EDITORIAL MARQUEE #2 (REVERSE PEARL ACCENT) */}
+      <KineticEditorialMarquee
+        variant="pearl"
+        reverse
+        items={[
+          'Saray Cumhuriyet · Pursaklar',
+          '0535 078 44 18',
+          'Ücretsiz Yerinde Keşif',
+          '1–2 Yıl Yazılı Garanti',
+          '@hilaltesisatdogalgaz',
+          '30–45 Dk Acil Müdahale',
+        ]}
+      />
+
+      {/* 8. REDESIGNED AWWWARDS HIGH-CONTRAST ROYAL CRIMSON CONTACT & GOOGLE MAPS */}
+      <section
+        id="iletisim"
+        className="relative z-10 scroll-mt-24 py-14 sm:py-20 overflow-hidden bg-[#4A0915] text-[#FAF5F0]"
+      >
+        {/* Luxury Studio Marble & Brushed Champagne Backdrop with Rich Crimson Scrim */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <svg viewBox="0 0 1440 420" preserveAspectRatio="none" className="w-full h-full">
-            <defs>
-              <linearGradient id="contactWaveBg" x1="0" y1="0" x2="1" y2="0.4">
-                <stop offset="0%" stopColor="#2A0509" />
-                <stop offset="48%" stopColor="#521017" />
-                <stop offset="100%" stopColor="#210306" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M0,18 C360,92 840,-20 1440,56 L1440,368 C1020,425 460,310 0,388 Z"
-              fill="url(#contactWaveBg)"
-            />
-            <path
-              d="M0,32 C380,104 860,-4 1440,68"
-              fill="none"
-              stroke="#C8A287"
-              strokeWidth="1.6"
-              opacity="0.55"
-            />
-            <path
-              d="M0,374 C460,298 1020,410 1440,354"
-              fill="none"
-              stroke="#C8A287"
-              strokeWidth="1.4"
-              opacity="0.45"
-            />
-          </svg>
+          <SafeImage
+            src={SITE_IMAGES.contactConciergeStage}
+            alt=""
+            className="w-full h-full object-cover opacity-32 saturate-125"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#4E0A17]/90 via-[#6E0E20]/86 to-[#3E0712]/94" />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-[1280px] px-3.5 sm:px-6 lg:px-8 text-[#F8F5F2]">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-center">
-            <EditorialReveal className="lg:col-span-5 space-y-2.5 sm:space-y-4">
+        <div className="relative z-10 mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
+          {/* Razor-Sharp High-Contrast Header Row */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 pb-6 border-b border-white/15">
+            <EditorialReveal className="space-y-2 max-w-xl">
               <div className="flex items-center gap-2.5">
-                <span className="text-[11px] sm:text-xs font-medium text-[#E5CFC1]">
-                  Hemen İletişime Geçin
+                <span className="text-[11px] font-semibold tracking-wide text-[#F3D9C7]">
+                  06 · İletişim & 7/24 Destek Merkezi
                 </span>
-                <span className="h-[1px] w-12 sm:w-14 bg-[#C8A287]/60" aria-hidden="true" />
+                <span className="h-[1px] w-10 bg-[#DFBCA3]/70" aria-hidden="true" />
               </div>
-              <h2 className="font-display text-2xl sm:text-[36px] lg:text-[40px] font-semibold leading-[1.12] text-white text-balance">
-                Uzman Ekibimizle Her Zaman Yanınızdayız
-              </h2>
-              <p className="text-xs sm:text-sm text-[#DFD3CC] leading-relaxed max-w-md">
-                Teklif almak, bilgi edinmek ya da destek talebinde bulunmak için bizimle iletişime
-                geçin.
+              <SplitTextReveal
+                as="h2"
+                text="Uzman Ekibimizle Her Zaman Yanınızdayız"
+                className="font-display text-2xl sm:text-[34px] lg:text-[38px] font-semibold leading-[1.1] text-white text-balance"
+              />
+              <p className="text-xs sm:text-sm text-[#F0E1D8] leading-relaxed">
+                Ücretsiz keşif, doğalgaz projesi veya acil kombi/tesisat desteği için formu
+                doldurun ya da tek dokunuşla doğrudan ulaşın.
               </p>
-              <div className="pt-1 sm:pt-2 flex flex-wrap items-center gap-2.5">
-                <Link
-                  href="/iletisim"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#F8F5F2] text-[#2A060A] px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-semibold shadow-lg hover:bg-white transition-transform hover:-translate-y-0.5"
-                >
-                  <span>İletişim</span>
-                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                </Link>
+            </EditorialReveal>
 
+            <div className="flex flex-wrap items-center gap-2.5">
+              <MagneticAction strength={8}>
+                <a
+                  href={SITE_INFO.phoneHref}
+                  className="inline-flex items-center gap-2 rounded-full bg-[#FAF4EE] hover:bg-white text-[#660D1C] px-4.5 py-2.5 text-xs sm:text-sm font-semibold shadow-lg transition-transform hover:-translate-y-0.5 tabular-nums whitespace-nowrap"
+                >
+                  <Phone className="w-4 h-4" aria-hidden="true" />
+                  <span>{SITE_INFO.phoneDisplay}</span>
+                </a>
+              </MagneticAction>
+
+              <MagneticAction strength={8}>
                 <a
                   href={buildWhatsappHref()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#1C5D36] hover:bg-[#174D2C] text-white border border-white/20 px-4 py-2 sm:px-5 sm:py-3 text-xs sm:text-sm font-semibold shadow-lg transition-transform hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#1C5D36] hover:bg-[#174D2C] text-white border border-white/20 px-4.5 py-2.5 text-xs sm:text-sm font-semibold shadow-lg transition-transform hover:-translate-y-0.5 whitespace-nowrap"
                 >
-                  <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                  <span>WhatsApp</span>
+                  <MessageCircle className="w-4 h-4" aria-hidden="true" />
+                  <span>WhatsApp ile Destek Al</span>
                 </a>
-              </div>
-            </EditorialReveal>
+              </MagneticAction>
 
-            <EditorialReveal delay={0.08} className="lg:col-span-4 space-y-3 sm:space-y-4">
-              <a
-                href={SITE_INFO.phoneHref}
-                className="flex items-center gap-3 sm:gap-4 group rounded-2xl p-1.5 -m-1.5 hover:bg-white/5 transition-colors"
-              >
-                <span className="inline-flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/10 border border-[#C8A287]/45 text-[#E9D1C0] shrink-0">
-                  <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                </span>
-                <div>
-                  <div className="text-sm sm:text-base font-semibold text-white tabular-nums group-hover:text-[#E9D1C0] transition-colors">
-                    {SITE_INFO.phoneDisplay}
-                  </div>
-                  <div className="text-[11px] sm:text-xs text-[#CBB8AE]">7/24 Telefon Hattı</div>
-                </div>
-              </a>
-
-              <a
-                href={buildWhatsappHref()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 sm:gap-4 group rounded-2xl p-1.5 -m-1.5 hover:bg-white/5 transition-colors"
-              >
-                <span className="inline-flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#1C5D36]/80 border border-white/25 text-white shrink-0">
-                  <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                </span>
-                <div>
-                  <div className="text-sm sm:text-base font-semibold text-white group-hover:text-[#AEE5C2] transition-colors">
-                    WhatsApp Destek
-                  </div>
-                  <div className="text-[11px] sm:text-xs text-[#CBB8AE]">
-                    Fotoğraf Gönder & Anında Teklif Al
-                  </div>
-                </div>
-              </a>
-
-              <a
-                href={`mailto:${SITE_INFO.email}`}
-                className="flex items-center gap-3 sm:gap-4 group rounded-2xl p-1.5 -m-1.5 hover:bg-white/5 transition-colors"
-              >
-                <span className="inline-flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/10 border border-[#C8A287]/45 text-[#E9D1C0] shrink-0">
-                  <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                </span>
-                <div>
-                  <div className="text-sm sm:text-base font-semibold text-white group-hover:text-[#E9D1C0] transition-colors">
-                    {SITE_INFO.email}
-                  </div>
-                  <div className="text-[11px] sm:text-xs text-[#CBB8AE]">E-posta Adresimiz</div>
-                </div>
-              </a>
-
-              <div className="flex items-center gap-3 sm:gap-4 p-1.5 -m-1.5">
-                <span className="inline-flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/10 border border-[#C8A287]/45 text-[#E9D1C0] shrink-0">
-                  <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                </span>
-                <div>
-                  <div className="text-sm sm:text-base font-semibold text-white">
-                    {SITE_INFO.addressLine1}
-                  </div>
-                  <div className="text-[11px] sm:text-xs text-[#CBB8AE]">
-                    {SITE_INFO.addressLine2}
-                  </div>
-                </div>
-              </div>
-            </EditorialReveal>
-
-            <div className="lg:col-span-3 flex justify-center">
-              <ParallaxLayer offset={14} className="w-32 sm:w-52 lg:w-60">
-                <div className="rounded-full overflow-hidden border border-[#C8A287]/50 shadow-[0_24px_60px_-15px_rgba(0,0,0,0.65)] ring-4 sm:ring-8 ring-white/10">
-                  <SafeImage
-                    src={SITE_IMAGES.phoneOrbital}
-                    alt="Hilal Tesisat 7/24 Destek Hattı"
-                    className="w-full aspect-square object-cover"
-                  />
-                </div>
-              </ParallaxLayer>
+              <MagneticAction strength={7}>
+                <a
+                  href={SITE_INFO.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-white/12 hover:bg-white/20 text-white border border-[#E9D1C0]/40 px-4 py-2.5 text-xs sm:text-sm font-medium backdrop-blur-md transition-transform hover:-translate-y-0.5 whitespace-nowrap"
+                >
+                  <Instagram className="w-4 h-4 text-[#F3D9C7]" aria-hidden="true" />
+                  <span>Instagram</span>
+                </a>
+              </MagneticAction>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* 6. MÜŞTERİLERİMİZİN GÖRÜŞLERİ (/kurumsal#yorumlar LINK) */}
-      <section className="relative z-10 py-10 sm:py-16 lg:py-22">
-        <div className="mx-auto max-w-[1280px] px-3.5 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-start">
-            <EditorialReveal className="lg:col-span-4 space-y-2.5 sm:space-y-4">
-              <div className="flex items-center gap-2.5">
-                <span className="text-[11px] sm:text-xs font-semibold tracking-wide text-[#7A353B]">
-                  Müşteri Yorumları
-                </span>
-                <span className="h-[1px] w-12 sm:w-16 bg-[#B99E96]" aria-hidden="true" />
-              </div>
-              <h2 className="font-display text-2xl sm:text-[36px] lg:text-[40px] font-semibold leading-[1.12] text-[#1D1716] text-balance">
-                Müşterilerimizin Görüşleri
-              </h2>
-              <p className="text-xs sm:text-[15px] leading-relaxed text-[#514946]">
-                Bizi tercih eden değerli müşterilerimizin memnuniyeti, en büyük motivasyonumuzdur.
-              </p>
-              <div className="pt-1 sm:pt-2 flex flex-wrap items-center gap-2.5">
-                <Link
-                  href="/kurumsal#yorumlar"
-                  className="inline-flex items-center gap-2 rounded-full burgundy-cta px-4 py-2 sm:px-6 sm:py-3 text-[11px] sm:text-sm font-medium text-white transition-transform hover:-translate-y-0.5"
-                >
-                  <span>Tüm Yorumları Gör</span>
-                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                </Link>
-              </div>
-            </EditorialReveal>
+          {/* 2-Column Balanced Contact Split: Crimson Concierge Card + Crisp Alabaster Quote Form */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-7 items-stretch">
+            <EditorialReveal delay={0.04} className="lg:col-span-5 flex">
+              <div className="w-full h-full rounded-2xl sm:rounded-3xl overflow-hidden burgundy-frosted-panel flex flex-col justify-between">
+                <div>
+                  <div className="relative h-40 overflow-hidden">
+                    <SafeImage
+                      src={SITE_IMAGES.corporateTeam}
+                      alt="Hilal Tesisat Saha ve Keşif Ekibi"
+                      className="w-full h-full object-cover"
+                    />
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-0 bg-gradient-to-t from-[#5C0B1A] via-[#5C0B1A]/50 to-transparent"
+                    />
+                    <div className="absolute bottom-3.5 left-5 right-5">
+                      <span className="text-[10.5px] font-medium text-[#F3D9C7]">
+                        Merkez Servis Ofisi · Saray Cumhuriyet
+                      </span>
+                      <h3 className="font-display text-xl sm:text-2xl font-semibold text-white">
+                        {SITE_INFO.brandName}
+                      </h3>
+                    </div>
+                  </div>
 
-            <div className="lg:col-span-8">
-              <div className="flex items-center justify-end gap-2 mb-3 sm:mb-4">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setReviewPage((prev) => (prev - 1 + totalReviewPages) % totalReviewPages)
-                  }
-                  aria-label="Önceki yorumlar"
-                  className="inline-flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-white/85 border border-[#D8CFC9] text-[#2A1F1D] hover:border-[#4A0D13] hover:text-[#4A0D13] transition-colors"
-                >
-                  <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setReviewPage((prev) => (prev + 1) % totalReviewPages)}
-                  aria-label="Sonraki yorumlar"
-                  className="inline-flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-white/85 border border-[#D8CFC9] text-[#2A1F1D] hover:border-[#4A0D13] hover:text-[#4A0D13] transition-colors"
-                >
-                  <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 items-stretch">
-                {visibleReviews.map((review) => (
-                  <LuxuryInteractiveCard
-                    key={review.id}
-                    className="pearl-glass rounded-xl sm:rounded-2xl h-full min-h-[195px] sm:min-h-[220px]"
-                  >
-                    <article className="h-full p-3.5 sm:p-5 flex flex-col justify-between space-y-3 sm:space-y-4">
+                  <div className="p-5 sm:p-6 space-y-3.5">
+                    <a
+                      href={SITE_INFO.phoneHref}
+                      className="flex items-center gap-3.5 rounded-xl p-2 -m-2 hover:bg-white/8 transition-colors"
+                    >
+                      <span className="w-9 h-9 rounded-full bg-white/10 border border-[#C8A287]/40 flex items-center justify-center shrink-0">
+                        <Phone className="w-4 h-4 text-[#E9D1C0]" aria-hidden="true" />
+                      </span>
                       <div>
-                        <div className="flex items-center gap-2.5 sm:gap-3">
-                          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden border border-white shadow-sm shrink-0">
-                            <SafeImage
-                              src={review.avatar}
-                              alt={review.name}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="min-w-0">
-                            <h3 className="text-xs sm:text-sm font-semibold text-[#1D1716] truncate">
-                              {review.name}
-                            </h3>
-                            <p className="text-[10.5px] sm:text-xs text-[#6B625E] truncate">
-                              {review.district} · {review.service}
-                            </p>
-                          </div>
+                        <div className="text-sm sm:text-base font-semibold text-white tabular-nums">
+                          {SITE_INFO.phoneDisplay}
                         </div>
-                        <p className="mt-2.5 sm:mt-4 text-[11.5px] sm:text-[13px] leading-relaxed text-[#423B39]">
-                          “{review.quote}”
-                        </p>
+                        <div className="text-[11px] text-[#DFCFC5]">7/24 Acil Telefon Hattı</div>
                       </div>
+                    </a>
 
-                      <div className="flex items-center justify-between pt-2 border-t border-[#E6DFDA]/70">
-                        <div
-                          className="flex items-center gap-0.5 sm:gap-1"
-                          aria-label={`${review.rating} üzerinden 5 yıldız`}
-                        >
-                          {Array.from({ length: review.rating }).map((_, idx) => (
-                            <Star
-                              key={idx}
-                              className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-[#7D1A23] text-[#7D1A23]"
-                              aria-hidden="true"
-                            />
-                          ))}
+                    <a
+                      href={buildWhatsappHref()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3.5 rounded-xl p-2 -m-2 hover:bg-white/8 transition-colors"
+                    >
+                      <span className="w-9 h-9 rounded-full bg-[#1C5D36] border border-white/25 flex items-center justify-center shrink-0">
+                        <MessageCircle className="w-4 h-4 text-white" aria-hidden="true" />
+                      </span>
+                      <div>
+                        <div className="text-sm sm:text-base font-semibold text-white">
+                          WhatsApp ile Destek Al
                         </div>
-                        <span className="text-[10px] font-medium text-[#7A6F6A]">
-                          Doğrulanmış Hizmet
-                        </span>
+                        <div className="text-[11px] text-[#DFCFC5]">
+                          Fotoğraf veya arıza kodu gönderin, anında fiyat alın
+                        </div>
                       </div>
-                    </article>
-                  </LuxuryInteractiveCard>
-                ))}
+                    </a>
+
+                    <a
+                      href={SITE_INFO.instagramUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3.5 rounded-xl p-2 -m-2 hover:bg-white/8 transition-colors"
+                    >
+                      <span className="w-9 h-9 rounded-full bg-gradient-to-br from-[#C82348] via-[#B81B35] to-[#E39B6D] border border-white/25 flex items-center justify-center shrink-0">
+                        <Instagram className="w-4 h-4 text-white" aria-hidden="true" />
+                      </span>
+                      <div className="min-w-0">
+                        <div className="text-sm font-semibold text-white truncate">
+                          {SITE_INFO.instagramHandle}
+                        </div>
+                        <div className="text-[11px] text-[#DFCFC5]">
+                          Resmi Instagram · Güncel Saha Uygulamaları
+                        </div>
+                      </div>
+                    </a>
+
+                    <a
+                      href={`mailto:${SITE_INFO.email}`}
+                      className="flex items-center gap-3.5 rounded-xl p-2 -m-2 hover:bg-white/8 transition-colors"
+                    >
+                      <span className="w-9 h-9 rounded-full bg-white/10 border border-[#C8A287]/40 flex items-center justify-center shrink-0">
+                        <Mail className="w-4 h-4 text-[#E9D1C0]" aria-hidden="true" />
+                      </span>
+                      <div className="min-w-0">
+                        <div className="text-sm font-semibold text-white break-all">
+                          {SITE_INFO.email}
+                        </div>
+                        <div className="text-[11px] text-[#DFCFC5]">Kurumsal E-posta</div>
+                      </div>
+                    </a>
+
+                    <a
+                      href={SITE_INFO.googleMapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-start gap-3.5 rounded-xl p-2 -m-2 hover:bg-white/8 transition-colors"
+                    >
+                      <span className="w-9 h-9 rounded-full bg-white/10 border border-[#C8A287]/40 flex items-center justify-center shrink-0 mt-0.5">
+                        <Navigation className="w-4 h-4 text-[#E9D1C0]" aria-hidden="true" />
+                      </span>
+                      <div>
+                        <div className="text-sm font-semibold text-white">
+                          {SITE_INFO.addressLine1}
+                        </div>
+                        <div className="text-[11px] text-[#DFCFC5]">
+                          {SITE_INFO.addressLine2} · Yol Tarifi Al →
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <div className="px-5 sm:px-6 pb-5 sm:pb-6 space-y-3.5">
+                  <div className="pt-3.5 border-t border-white/12 space-y-1.5">
+                    <div className="text-[11px] font-semibold text-[#E9D1C0]">
+                      Aktif Servis Bölgelerimiz (Ankara)
+                    </div>
+                    <p className="text-xs text-[#EFE3DB] leading-relaxed">
+                      {SITE_INFO.serviceDistricts.join(' · ')}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-white/12 flex flex-wrap gap-4 text-[11px] text-[#EFE3DB]">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-[#E9D1C0]" aria-hidden="true" />
+                      30–45 Dk Ortalama Varış
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#E9D1C0]" aria-hidden="true" />
+                      Garantili İşçilik
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
+            </EditorialReveal>
+
+            <EditorialReveal delay={0.14} className="lg:col-span-7 flex">
+              <QuoteForm />
+            </EditorialReveal>
           </div>
+
+          {/* Full-Width Real Google Maps Interactive Location Component */}
+          <LiveLocationMap />
         </div>
       </section>
 
@@ -858,7 +1061,7 @@ export function HomeLanding() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4"
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4"
             onClick={() => setSelectedService(null)}
           >
             <motion.div
@@ -870,16 +1073,16 @@ export function HomeLanding() {
               exit={{ opacity: 0, scale: 0.96, y: 12 }}
               transition={{ duration: 0.22, ease: EASE_LUXURY }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-2xl rounded-2xl sm:rounded-3xl bg-[#F7F5F3] border border-white p-5 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="w-full max-w-2xl rounded-2xl sm:rounded-3xl bg-[#F9F6F4] border border-white p-5 sm:p-7 shadow-2xl max-h-[90vh] overflow-y-auto"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <span className="text-[11px] sm:text-xs font-medium text-[#7A353B]">
+                  <span className="text-[11px] font-medium text-[#6E1620]">
                     {selectedService.categoryLabel} · {selectedService.responseTime}
                   </span>
                   <h3
                     id="modal-service-title"
-                    className="font-display text-xl sm:text-3xl font-semibold text-[#1D1716] mt-1"
+                    className="font-display text-xl sm:text-2xl font-semibold text-[#1A1312] mt-1"
                   >
                     {selectedService.title}
                   </h3>
@@ -888,13 +1091,13 @@ export function HomeLanding() {
                   type="button"
                   aria-label="Hizmet detayını kapat"
                   onClick={() => setSelectedService(null)}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white border border-[#D8CFC9] flex items-center justify-center text-[#1D1716] hover:bg-[#EAE4DF]"
+                  className="w-8 h-8 rounded-full bg-white border border-[#D8CFC9] flex items-center justify-center text-[#1A1312] hover:bg-[#EAE4DF]"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="mt-4 sm:mt-5 grid grid-cols-1 sm:grid-cols-12 gap-4 sm:gap-5 items-center">
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
                 <div className="sm:col-span-5 rounded-2xl overflow-hidden bg-white aspect-square flex items-center justify-center p-4">
                   <SafeImage
                     src={selectedService.image}
@@ -903,10 +1106,10 @@ export function HomeLanding() {
                   />
                 </div>
                 <div className="sm:col-span-7 space-y-3">
-                  <p className="text-xs sm:text-sm text-[#423B39] leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#3F3735] leading-relaxed">
                     {selectedService.details}
                   </p>
-                  <div className="flex flex-wrap gap-3 sm:gap-4 text-xs text-[#36080D] font-medium pt-1">
+                  <div className="flex flex-wrap gap-3 text-xs text-[#36080D] font-medium pt-1">
                     <span className="inline-flex items-center gap-1.5">
                       <ShieldCheck className="w-4 h-4" aria-hidden="true" />
                       {selectedService.warranty}
@@ -934,15 +1137,18 @@ export function HomeLanding() {
                 </ul>
               </div>
 
-              <div className="mt-5 flex flex-wrap items-center gap-3">
-                <Link
-                  href={`/iletisim?hizmet=${selectedService.slug}`}
-                  onClick={() => setSelectedService(null)}
+              <div className="mt-5 flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedService(null);
+                    scrollToSection('iletisim');
+                  }}
                   className="inline-flex items-center gap-2 rounded-full burgundy-cta px-5 py-2.5 text-xs sm:text-sm font-medium text-white"
                 >
                   <span>Teklif Al</span>
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                </Link>
+                </button>
                 <a
                   href={buildWhatsappHref(selectedService.title)}
                   target="_blank"
@@ -950,29 +1156,22 @@ export function HomeLanding() {
                   className="inline-flex items-center gap-2 rounded-full bg-[#1C5D36] hover:bg-[#174D2C] px-5 py-2.5 text-xs sm:text-sm font-semibold text-white transition-colors"
                 >
                   <MessageCircle className="w-4 h-4" aria-hidden="true" />
-                  <span>WhatsApp</span>
+                  <span>WhatsApp ile Destek Al</span>
                 </a>
-                <Link
-                  href={`/hizmetler#${selectedService.slug}`}
-                  onClick={() => setSelectedService(null)}
-                  className="text-xs font-semibold text-[#4A0D13] hover:underline"
-                >
-                  Detaylı İncele →
-                </Link>
               </div>
             </motion.div>
           </motion.div>
         ) : null}
       </AnimatePresence>
 
-      {/* INTRO SHOWCASE MODAL */}
+      {/* REAL VIDEO INTRO SHOWCASE MODAL */}
       <AnimatePresence>
         {showIntroModal ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4"
+            className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4"
             onClick={() => setShowIntroModal(false)}
           >
             <motion.div
@@ -984,14 +1183,14 @@ export function HomeLanding() {
               exit={{ opacity: 0, scale: 0.96, y: 12 }}
               transition={{ duration: 0.22, ease: EASE_LUXURY }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-2xl rounded-2xl sm:rounded-3xl bg-[#1D0407] text-[#F8F5F2] border border-[#C8A287]/35 p-5 sm:p-8 shadow-2xl"
+              className="w-full max-w-xl rounded-2xl sm:rounded-3xl bg-[#190306] text-[#F8F5F2] border border-[#C8A287]/35 p-5 sm:p-6 shadow-2xl max-h-[92vh] overflow-y-auto"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <span className="text-xs text-[#C8A287]">Hilal Tesisat · Kurumsal Tanıtım</span>
+                  <span className="text-xs text-[#E9D1C0]">Hilal Tesisat · Gerçek Saha Tanıtımı</span>
                   <h3
                     id="intro-modal-title"
-                    className="font-display text-xl sm:text-3xl font-semibold mt-1"
+                    className="font-display text-xl sm:text-2xl font-semibold mt-0.5"
                   >
                     15+ Yıllık Mühendislik ve Saha Gücü
                   </h3>
@@ -1000,41 +1199,46 @@ export function HomeLanding() {
                   type="button"
                   aria-label="Tanıtım penceresini kapat"
                   onClick={() => setShowIntroModal(false)}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20"
+                  className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 shrink-0"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="mt-4 rounded-2xl overflow-hidden aspect-video relative border border-white/15">
-                <SafeImage
-                  src={SITE_IMAGES.projectBoilerBathroom}
-                  alt="Hilal Tesisat Uygulama Standartları"
-                  className="w-full h-full object-cover"
+              <div className="mt-4 rounded-2xl overflow-hidden bg-black border border-white/15 flex justify-center">
+                <video
+                  src={FIELD_VIDEOS[0].src}
+                  poster={FIELD_VIDEOS[0].poster}
+                  controls
+                  autoPlay
+                  playsInline
+                  className="max-h-[54vh] w-auto object-contain"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex items-end p-4 sm:p-5">
-                  <p className="text-xs sm:text-sm text-[#EFECE9] leading-relaxed">
-                    Başkentgaz onaylı doğalgaz iç tesisatı, termal kameralı kaçak tespiti, darbeli
-                    petek temizliği ve anahtar teslim mekanik çözümler ile Ankara’nın her
-                    noktasındayız.
-                  </p>
-                </div>
               </div>
 
-              <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-4 text-[11px] sm:text-xs text-[#D6C5BA]">
-                  <span>✓ TSE & Yetkili Servis Standartları</span>
-                  <span>✓ 7/24 Acil Müdahale</span>
-                </div>
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowIntroModal(false);
+                    scrollToSection('saha-videolari');
+                  }}
+                  className="text-xs font-semibold text-[#E9D1C0] hover:underline"
+                >
+                  Tüm Dikey Saha Videolarını İzle →
+                </button>
                 <div className="flex flex-wrap items-center gap-2">
-                  <Link
-                    href="/iletisim"
-                    onClick={() => setShowIntroModal(false)}
-                    className="inline-flex items-center gap-2 rounded-full bg-[#F8F5F2] text-[#230508] px-4 py-2 text-xs font-semibold"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowIntroModal(false);
+                      scrollToSection('iletisim');
+                    }}
+                    className="inline-flex items-center gap-2 rounded-full bg-[#FAF4EE] text-[#230508] px-4 py-2 text-xs font-semibold"
                   >
                     <span>Keşif Randevusu Al</span>
                     <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
-                  </Link>
+                  </button>
                   <a
                     href={buildWhatsappHref()}
                     target="_blank"

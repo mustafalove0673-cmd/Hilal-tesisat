@@ -32,7 +32,7 @@ export function FaqAccordion() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
         {/* Left Sticky Visual Support & Topic Panel */}
         <aside className="lg:col-span-4 space-y-6">
-          <div className="rounded-3xl overflow-hidden bg-gradient-to-br from-[#2B0509] via-[#4A0D13] to-[#1D0306] text-[#F8F5F2] shadow-2xl border border-[#C8A287]/30">
+          <div className="rounded-3xl overflow-hidden bg-gradient-to-br from-[#5C0B1A] via-[#891327] to-[#460814] text-[#F8F5F2] shadow-2xl border border-[#DFBCA3]/35">
             <div className="aspect-[16/9] relative overflow-hidden">
               <SafeImage
                 src={SITE_IMAGES.bannerHeating}
@@ -41,7 +41,7 @@ export function FaqAccordion() {
               />
               <div
                 aria-hidden="true"
-                className="absolute inset-0 bg-gradient-to-t from-[#2B0509] via-[#2B0509]/35 to-transparent"
+                className="absolute inset-0 bg-gradient-to-t from-[#5C0B1A] via-[#5C0B1A]/35 to-transparent"
               />
             </div>
             <div className="p-6 space-y-4">
@@ -64,7 +64,7 @@ export function FaqAccordion() {
                   <span>{SITE_INFO.phoneDisplay}</span>
                 </a>
                 <Link
-                  href="/iletisim"
+                  href="/#iletisim"
                   className="inline-flex items-center gap-1.5 rounded-full border border-[#C8A287]/50 px-4 py-2 text-xs font-medium text-white hover:bg-white/10 transition-colors whitespace-nowrap"
                 >
                   <span>Soru İletin</span>
@@ -125,7 +125,7 @@ export function FaqAccordion() {
                 Aramanızla eşleşen bir soru bulunamadı. Uzman ekibimize doğrudan sorabilirsiniz.
               </p>
               <Link
-                href="/iletisim"
+                href="/#iletisim"
                 className="inline-flex items-center gap-2 rounded-full burgundy-cta px-5 py-2.5 text-xs font-medium text-white"
               >
                 <span>Bize Sorun</span>
@@ -146,7 +146,7 @@ export function FaqAccordion() {
                       className="w-full text-left px-5 sm:px-7 py-5 flex items-center justify-between gap-4 hover:bg-white/35 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5E1119]"
                     >
                       <div className="space-y-1">
-                        <div className="flex items-center gap-2 text-[11px] font-semibold text-[#7A353B]">
+                        <div className="flex items-center gap-2 text-[11px] font-semibold text-[#A81830]">
                           <span className="tabular-nums">{num}</span>
                           <span aria-hidden="true">·</span>
                           <span>{item.category}</span>
@@ -156,7 +156,7 @@ export function FaqAccordion() {
                         </span>
                       </div>
                       <ChevronDown
-                        className={`w-5 h-5 text-[#4A0D13] shrink-0 transition-transform duration-200 ${
+                        className={`w-5 h-5 text-[#9E162C] shrink-0 transition-transform duration-200 ${
                           isOpen ? 'rotate-180' : ''
                         }`}
                         aria-hidden="true"

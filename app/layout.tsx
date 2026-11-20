@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import { Cormorant_Garamond, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
-import { buildLocalBusinessJsonLd, buildPageMetadata } from '@/lib/seo';
+import {
+  buildLocalBusinessJsonLd,
+  buildPageMetadata,
+  buildWebSiteJsonLd,
+} from '@/lib/seo';
 import { MotionShell, ScrollProgressBar } from '@/components/MotionPrimitives';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -23,25 +27,29 @@ const sansFont = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = buildPageMetadata({
-  title: 'Hilal Tesisat – Ankara Doğalgaz, Kombi Bakımı & Sıhhi Tesisat',
+  title: 'Hilal Tesisat – Pursaklar Ankara Doğalgaz, Kombi & Sıhhi Tesisat',
   description:
-    'Ankara Pursaklar merkezli 7/24 doğalgaz projesi, kombi bakımı, petek temizliği, su arıtma ve kırmadan tıkanıklık açma çözümleri.',
+    'Hilal Tesisat: Saray Cumhuriyet Pursaklar Ankara merkezli 7/24 doğalgaz projesi, kombi bakımı, ilaçlı petek temizliği, su arıtma ve tıkanıklık açma. Tel: 0535 078 44 18.',
   path: '/',
   keywords: [
     'Hilal Tesisat',
-    'Ankara tesisatçı',
-    'Pursaklar tesisat',
-    'kombi bakımı Ankara',
-    'petek temizliği Ankara',
+    'Hilal Teknik Servis',
+    'Hilal Tesisat Pursaklar',
+    'Hilal Tesisat Ankara',
+    'Saray Cumhuriyet tesisatçı',
+    'Pursaklar doğalgaz tesisat',
+    'Ankara kombi bakımı',
+    'Ankara ilaçlı petek temizliği',
     'Başkentgaz yetkili doğalgaz firması',
-    'su arıtma cihazı montajı',
-    'kırmadan su kaçağı tespiti',
-    'pis su tıkanıklığı açma',
+    'Pursaklar su arıtma montajı',
+    'kırmadan su kaçağı tespiti Ankara',
+    'kameralı pis su tıkanıklığı açma',
   ],
 });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const businessSchema = buildLocalBusinessJsonLd();
+  const websiteSchema = buildWebSiteJsonLd();
 
   return (
     <html
@@ -53,6 +61,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(businessSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
         <MotionShell>
           <ScrollProgressBar />

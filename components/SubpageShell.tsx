@@ -96,32 +96,34 @@ export function SubpageShell({
           </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-center">
-            <div className="lg:col-span-7 space-y-3 sm:space-y-5">
-              <div className="flex items-center gap-2.5 sm:gap-3">
-                <span className="h-[1px] w-7 sm:w-10 bg-[#8C5B4D]" aria-hidden="true" />
-                <span className="text-[11px] sm:text-xs font-semibold tracking-wide text-[#7A353B]">
-                  {eyebrow}
-                </span>
-              </div>
-              <ArchitecturalMaskReveal>
-                <h1 className="font-display text-3xl sm:text-5xl lg:text-[54px] font-semibold leading-[1.06] tracking-[-0.015em] text-[#1D1716] text-balance">
-                  {title}
-                </h1>
-              </ArchitecturalMaskReveal>
-              <p className="text-xs sm:text-base leading-relaxed text-[#453D3B] max-w-2xl">
-                {description}
-              </p>
+            <div className="lg:col-span-7">
+              <div className="burgundy-vellum-frame rounded-2xl sm:rounded-3xl p-5 sm:p-7 space-y-3 sm:space-y-4">
+                <div className="flex items-center gap-2.5 sm:gap-3">
+                  <span className="h-[1px] w-7 sm:w-10 bg-[#7A1B25]" aria-hidden="true" />
+                  <span className="text-[11px] sm:text-xs font-semibold tracking-wide text-[#5E1119]">
+                    {eyebrow}
+                  </span>
+                </div>
+                <ArchitecturalMaskReveal>
+                  <h1 className="font-display text-3xl sm:text-5xl lg:text-[52px] font-semibold leading-[1.06] tracking-[-0.015em] text-[#1A1312] text-balance">
+                    {title}
+                  </h1>
+                </ArchitecturalMaskReveal>
+                <p className="text-xs sm:text-base leading-relaxed text-[#362D2B] max-w-2xl">
+                  {description}
+                </p>
 
-              <div className="pt-1 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] sm:text-xs font-medium text-[#4D1017]">
-                <span>{heroMetricValue}</span>
-                <span aria-hidden="true" className="text-[#9E8B84]">
-                  ·
-                </span>
-                <span className="text-[#514946]">{heroMetricLabel}</span>
-                <span aria-hidden="true" className="text-[#9E8B84]">
-                  ·
-                </span>
-                <span className="text-[#514946]">Pursaklar & Tüm Ankara</span>
+                <div className="pt-1 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] sm:text-xs font-semibold text-[#4D1017]">
+                  <span>{heroMetricValue}</span>
+                  <span aria-hidden="true" className="text-[#9E8B84]">
+                    ·
+                  </span>
+                  <span className="text-[#453B38] font-medium">{heroMetricLabel}</span>
+                  <span aria-hidden="true" className="text-[#9E8B84]">
+                    ·
+                  </span>
+                  <span className="text-[#453B38] font-medium">Pursaklar & Tüm Ankara</span>
+                </div>
               </div>
             </div>
 
@@ -187,7 +189,7 @@ export function SubpageShell({
                 </p>
                 <div className="pt-1 flex flex-wrap items-center gap-2.5 sm:gap-3">
                   <Link
-                    href="/iletisim"
+                    href="/#iletisim"
                     className="inline-flex items-center gap-2 rounded-full bg-[#F8F5F2] text-[#2A060A] px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-semibold shadow-lg hover:bg-white transition-transform hover:-translate-y-0.5 whitespace-nowrap"
                   >
                     <span>Teklif & Keşif Formu</span>
@@ -200,7 +202,7 @@ export function SubpageShell({
                     className="inline-flex items-center gap-1.5 rounded-full bg-[#1C5D36] hover:bg-[#174D2C] border border-white/20 px-4 py-2 sm:px-5 sm:py-3 text-xs sm:text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 whitespace-nowrap"
                   >
                     <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                    <span>WhatsApp</span>
+                    <span>WhatsApp ile Destek Al</span>
                   </a>
                   <a
                     href={SITE_INFO.phoneHref}

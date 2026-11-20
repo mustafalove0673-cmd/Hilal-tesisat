@@ -5,13 +5,14 @@ import { buildPageMetadata } from '@/lib/seo';
 import { SubpageShell } from '@/components/SubpageShell';
 import { ContactFormLoader } from '@/components/ContactFormLoader';
 import { QuoteForm } from '@/components/QuoteForm';
+import { LiveLocationMap } from '@/components/LiveLocationMap';
 import { SafeImage } from '@/components/SafeImage';
 import { SITE_IMAGES, SITE_INFO } from '@/lib/site-data';
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'İletişim & Teklif Al | Hilal Tesisat – 7/24 Ankara Destek',
   description:
-    'Hilal Tesisat ile 7/24 iletişime geçin, ücretsiz keşif ve fiyat teklifi alın. Edebali Cd. 78, Pursaklar / Ankara · +90 555 078 44 18.',
+    'Hilal Tesisat ile 7/24 iletişime geçin, ücretsiz keşif ve fiyat teklifi alın. Saray Cumhuriyet, Edebali Sk. 7 B, 06146 Pursaklar / Ankara · 0535 078 44 18.',
   path: '/iletisim',
 });
 
@@ -21,17 +22,17 @@ export default function IletisimPage() {
       eyebrow="7/24 Destek & Ücretsiz Keşif"
       title="Uzman Ekibimizle Hemen İletişime Geçin"
       description="Keşif randevusu, doğalgaz projesi, kombi bakımı veya acil su/gaz kaçağı desteği için formumuzu doldurun ya da telefon hattımızdan bize ulaşın."
-      heroImage={SITE_IMAGES.bannerGas}
-      heroImageAlt="Hilal Tesisat Hassas Doğalgaz ve Sıhhi Tesisat Mühendislik Hizmeti"
+      heroImage={SITE_IMAGES.contactConciergeStage}
+      heroImageAlt="Hilal Tesisat 7/24 Teknik Destek ve Doğalgaz Mühendislik Merkezi"
       heroMetricValue="30–45 Dk Varış"
-      heroMetricLabel="9 Ankara İlçesinde Kesintisiz Servis"
+      heroMetricLabel="Ankara Geneli Kesintisiz Servis"
       showContactBand={false}
       breadcrumbs={[
         { name: 'Ana Sayfa', path: '/' },
         { name: 'İletişim', path: '/iletisim' },
       ]}
     >
-      <div className="mx-auto max-w-[1280px] px-3.5 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
           {/* Left: Flagship Deep Burgundy Office & Dispatch Desk Card */}
           <div className="lg:col-span-5 flex">
@@ -139,6 +140,10 @@ export default function IletisimPage() {
               <ContactFormLoader />
             </Suspense>
           </div>
+        </div>
+
+        <div className="mt-8 sm:mt-10">
+          <LiveLocationMap />
         </div>
       </div>
     </SubpageShell>

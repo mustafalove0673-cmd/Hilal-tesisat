@@ -106,7 +106,7 @@ export default function KurumsalPage() {
             </p>
             <div className="pt-2 flex flex-wrap items-center gap-3">
               <Link
-                href="/iletisim"
+                href="/#iletisim"
                 className="inline-flex items-center gap-2 rounded-full burgundy-cta px-6 py-3 text-xs sm:text-sm font-medium text-white"
               >
                 <span>Ekibimizle İletişime Geçin</span>

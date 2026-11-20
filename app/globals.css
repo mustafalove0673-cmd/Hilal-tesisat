@@ -4,10 +4,10 @@
   --bg-pearl: #efece9;
   --bg-surface: #f7f5f3;
   --bg-card: rgba(255, 255, 255, 0.72);
-  --burgundy-950: #1d0407;
-  --burgundy-900: #36080d;
-  --burgundy-800: #4d0d14;
-  --burgundy-700: #6e1620;
+  --burgundy-950: #3d0711;
+  --burgundy-900: #630c1b;
+  --burgundy-800: #871225;
+  --burgundy-700: #a81830;
   --champagne-400: #c8a287;
   --ink-900: #1b1817;
   --ink-600: #5a5350;
@@ -18,6 +18,15 @@
     scroll-behavior: smooth;
     background-color: var(--bg-pearl);
     color: var(--ink-900);
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
   }
 
   body {
@@ -40,30 +49,110 @@
 .pearl-glass {
   background: linear-gradient(
     145deg,
-    rgba(255, 255, 255, 0.88) 0%,
-    rgba(246, 242, 239, 0.76) 100%
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(246, 242, 239, 0.8) 100%
   );
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.92);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.85),
-    0 20px 50px -24px rgba(54, 8, 13, 0.16);
+    inset 0 1px 0 rgba(255, 255, 255, 0.88),
+    0 20px 50px -24px rgba(135, 18, 37, 0.18);
+}
+
+/* Sleek Compact Translucent Crimson-Burgundy Tinted Glass Frame */
+.burgundy-vellum-frame {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 253, 251, 0.92) 0%,
+    rgba(249, 241, 240, 0.86) 100%
+  );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(154, 21, 42, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 14px 32px -20px rgba(135, 18, 37, 0.22);
+}
+
+/* Rich Crimson-Burgundy Velvet Glass Panel for High-Contrast Editorial Copy */
+.burgundy-frosted-panel {
+  background: linear-gradient(
+    145deg,
+    rgba(110, 15, 31, 0.88) 0%,
+    rgba(66, 9, 19, 0.94) 100%
+  );
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(220, 178, 152, 0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 234, 218, 0.18),
+    0 20px 48px -20px rgba(60, 6, 15, 0.56);
+}
+
+/* Awwwards Floating Architectural Top Navigation Surface (Vibrant Crimson-Burgundy) */
+.awwwards-nav-shell {
+  background: linear-gradient(
+    135deg,
+    rgba(86, 11, 24, 0.93) 0%,
+    rgba(128, 17, 36, 0.9) 52%,
+    rgba(74, 9, 21, 0.94) 100%
+  );
+  backdrop-filter: blur(24px) saturate(145%);
+  -webkit-backdrop-filter: blur(24px) saturate(145%);
+  border: 1px solid rgba(232, 192, 166, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 238, 224, 0.18),
+    0 18px 46px -18px rgba(78, 8, 20, 0.52);
 }
 
 .burgundy-cta {
-  background: linear-gradient(135deg, #63131c 0%, #3a080e 58%, #220407 100%);
+  background: linear-gradient(135deg, #b81b35 0%, #8e1328 56%, #640c1b 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 228, 210, 0.22),
-    0 14px 30px -10px rgba(74, 13, 19, 0.48);
+    inset 0 1px 0 rgba(255, 232, 220, 0.26),
+    0 12px 26px -10px rgba(154, 21, 42, 0.5);
 }
 
 .burgundy-cta:hover {
-  background: linear-gradient(135deg, #751722 0%, #480b12 58%, #2c060a 100%);
+  background: linear-gradient(135deg, #cc1f3c 0%, #a3172f 56%, #740f20 100%);
+}
+
+/* Contact Form Success Celebration Keyframes */
+@keyframes success-ring-ripple {
+  0% {
+    transform: scale(0.72);
+    opacity: 0.78;
+  }
+  100% {
+    transform: scale(1.62);
+    opacity: 0;
+  }
+}
+
+.animate-success-ripple {
+  animation: success-ring-ripple 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-success-ripple-delayed {
+  animation: success-ring-ripple 1.9s cubic-bezier(0.16, 1, 0.3, 1) 0.24s forwards;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .animate-success-ripple,
+  .animate-success-ripple-delayed {
+    animation: none;
+    opacity: 0;
   }
 }

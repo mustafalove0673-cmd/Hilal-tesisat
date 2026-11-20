@@ -27,9 +27,9 @@ export function HilalLogo({
       >
         <defs>
           <linearGradient id="hilalBurgundy" x1="6" y1="6" x2="40" y2="42" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#7E1924" />
-            <stop offset="55%" stopColor="#43090F" />
-            <stop offset="100%" stopColor="#210306" />
+            <stop offset="0%" stopColor="#D1213B" />
+            <stop offset="55%" stopColor="#991429" />
+            <stop offset="100%" stopColor="#5C0B19" />
           </linearGradient>
           <linearGradient id="hilalSteel" x1="16" y1="8" x2="36" y2="38" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor={variant === 'light' ? '#F3EEEA' : '#4A4645'} />

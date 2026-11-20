@@ -2,17 +2,26 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
+import {
+  ArrowRight,
+  CheckCircle2,
+  Instagram,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+} from 'lucide-react';
 import { HilalLogo } from './HilalLogo';
 import { buildWhatsappHref, SITE_INFO } from '@/lib/site-data';
 
 const QUICK_ROUTES = [
-  { href: '/', label: 'Ana Sayfa' },
-  { href: '/hizmetler', label: 'Hizmetler' },
-  { href: '/projelerimiz', label: 'Projelerimiz' },
-  { href: '/kurumsal', label: 'Kurumsal' },
-  { href: '/sss', label: 'SSS' },
-  { href: '/iletisim', label: 'İletişim' },
+  { href: '/#hero', label: 'Ana Sayfa' },
+  { href: '/#hizmetler', label: 'Hizmetler' },
+  { href: '/#projeler', label: 'Projeler' },
+  { href: '/#saha-videolari', label: 'Saha Videoları' },
+  { href: '/#kurumsal', label: 'Kurumsal' },
+  { href: '/#sss', label: 'SSS' },
+  { href: '/#iletisim', label: 'İletişim' },
 ];
 
 export function Footer() {
@@ -63,9 +72,9 @@ export function Footer() {
           <defs>
             <linearGradient id="footerWaveRight" x1="0" y1="0" x2="1" y2="0.15">
               <stop offset="0%" stopColor="#EBE7E4" stopOpacity="0" />
-              <stop offset="18%" stopColor="#4A0D13" stopOpacity="0.65" />
-              <stop offset="48%" stopColor="#5D1119" stopOpacity="0.94" />
-              <stop offset="100%" stopColor="#260508" stopOpacity="0.98" />
+              <stop offset="18%" stopColor="#9E162C" stopOpacity="0.72" />
+              <stop offset="48%" stopColor="#B81B35" stopOpacity="0.94" />
+              <stop offset="100%" stopColor="#5C0B1A" stopOpacity="0.98" />
             </linearGradient>
           </defs>
           <path
@@ -103,7 +112,7 @@ export function Footer() {
             <ul className="space-y-1.5 sm:space-y-2.5 text-xs sm:text-sm text-[#4D4644]">
               {QUICK_ROUTES.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} className="hover:text-[#4A0D13] transition-colors">
+                  <Link href={item.href} className="hover:text-[#A81830] transition-colors">
                     {item.label}
                   </Link>
                 </li>
@@ -120,9 +129,9 @@ export function Footer() {
               <li>
                 <a
                   href={SITE_INFO.phoneHref}
-                  className="inline-flex items-center gap-2 hover:text-[#4A0D13] transition-colors tabular-nums"
+                  className="inline-flex items-center gap-2 hover:text-[#A81830] transition-colors tabular-nums"
                 >
-                  <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#4A0D13]/10 text-[#4A0D13] shrink-0">
+                  <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#A81830]/12 text-[#A81830] shrink-0">
                     <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
                   </span>
                   <span className="truncate">{SITE_INFO.phoneDisplay}</span>
@@ -138,29 +147,49 @@ export function Footer() {
                   <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#1C5D36]/12 text-[#1C5D36] shrink-0">
                     <MessageCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
                   </span>
-                  <span>WhatsApp 7/24 Hattı</span>
+                  <span>WhatsApp ile Destek Al</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href={SITE_INFO.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 hover:text-[#B81B35] transition-colors"
+                >
+                  <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#B81B35]/12 text-[#B81B35] shrink-0">
+                    <Instagram className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
+                  </span>
+                  <span className="truncate">{SITE_INFO.instagramHandle}</span>
                 </a>
               </li>
               <li>
                 <a
                   href={`mailto:${SITE_INFO.email}`}
-                  className="inline-flex items-center gap-2 hover:text-[#4A0D13] transition-colors"
+                  className="inline-flex items-center gap-2 hover:text-[#A81830] transition-colors"
                 >
-                  <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#4A0D13]/10 text-[#4A0D13] shrink-0">
+                  <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#A81830]/12 text-[#A81830] shrink-0">
                     <Mail className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
                   </span>
                   <span className="break-all">{SITE_INFO.email}</span>
                 </a>
               </li>
-              <li className="inline-flex items-start gap-2">
-                <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#4A0D13]/10 text-[#4A0D13] shrink-0 mt-0.5">
-                  <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
-                </span>
-                <span>
-                  {SITE_INFO.addressLine1}
-                  <br />
-                  {SITE_INFO.addressLine2}
-                </span>
+              <li>
+                <a
+                  href={SITE_INFO.googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-start gap-2 hover:text-[#A81830] transition-colors"
+                >
+                  <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#A81830]/12 text-[#A81830] shrink-0 mt-0.5">
+                    <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
+                  </span>
+                  <span>
+                    {SITE_INFO.addressLine1}
+                    <br />
+                    {SITE_INFO.addressLine2}
+                  </span>
+                </a>
               </li>
             </ul>
           </div>
@@ -170,6 +199,15 @@ export function Footer() {
             <h3 className="font-display text-base sm:text-lg font-semibold text-[#23191A] mb-2 sm:mb-3">
               Bizi Takip Edin & Bülten
             </h3>
+            <a
+              href={SITE_INFO.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/95 hover:bg-white border border-[#B81B35]/25 hover:border-[#B81B35] px-3.5 py-1.5 text-[11.5px] sm:text-xs font-medium text-[#660D1C] shadow-sm transition-all whitespace-nowrap"
+            >
+              <Instagram className="w-3.5 h-3.5 text-[#B81B35] shrink-0" aria-hidden="true" />
+              <span>Instagram · {SITE_INFO.instagramHandle}</span>
+            </a>
             <p className="text-[11px] sm:text-xs text-[#57504D] mb-2.5 sm:mb-3 leading-relaxed">
               Periyodik kombi bakım hatırlatmaları ve teknik bilgilendirmeler için kaydolun.
             </p>
@@ -219,25 +257,25 @@ export function Footer() {
           <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-5 gap-y-1">
             <Link
               href="/yasal/gizlilik-politikasi"
-              className="hover:text-[#4A0D13] transition-colors"
+              className="hover:text-[#A81830] transition-colors"
             >
               Gizlilik Politikası
             </Link>
             <span aria-hidden="true">·</span>
-            <Link href="/yasal/kvkk" className="hover:text-[#4A0D13] transition-colors">
+            <Link href="/yasal/kvkk" className="hover:text-[#A81830] transition-colors">
               KVKK
             </Link>
             <span aria-hidden="true">·</span>
             <Link
               href="/yasal/kullanim-sartlari"
-              className="hover:text-[#4A0D13] transition-colors"
+              className="hover:text-[#A81830] transition-colors"
             >
               Kullanım Şartları
             </Link>
             <span aria-hidden="true">·</span>
             <Link
               href="/yasal/cerez-politikasi"
-              className="hover:text-[#4A0D13] transition-colors"
+              className="hover:text-[#A81830] transition-colors"
             >
               Çerez Politikası
             </Link>
