@@ -34,11 +34,12 @@ export function FloatingContactActions() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="WhatsApp ile Destek Al"
-        className="inline-flex items-center gap-2 rounded-full bg-[#1C5D36] hover:bg-[#174D2C] text-white px-3.5 h-10 sm:px-4.5 sm:h-11 shadow-[0_14px_30px_-8px_rgba(20,70,40,0.5)] border border-white/25 transition-all hover:scale-[1.03] active:scale-95"
+        className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-[#1C5D36] hover:bg-[#174D2C] text-white px-3.5 h-10 sm:px-4.5 sm:h-11 shadow-[0_14px_30px_-8px_rgba(20,70,40,0.5)] border border-white/25 transition-all hover:scale-[1.03] active:scale-95"
       >
         <MessageCircle className="w-4 h-4 shrink-0" aria-hidden="true" />
         <span className="text-[11.5px] sm:text-xs font-semibold whitespace-nowrap">
-          WhatsApp ile Destek Al
+          <span className="sm:hidden">WhatsApp</span>
+          <span className="hidden sm:inline">WhatsApp ile Destek Al</span>
         </span>
       </a>
     </div>

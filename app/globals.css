@@ -18,6 +18,7 @@
     scroll-behavior: smooth;
     background-color: var(--bg-pearl);
     color: var(--ink-900);
+    overflow-x: clip;
   }
 
   html.lenis,

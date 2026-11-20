@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, Menu, MessageCircle, Phone, X } from 'lucide-react';
+import { ArrowRight, MapPin, Menu, MessageCircle, Navigation, Phone, X } from 'lucide-react';
 import { HilalLogo } from './HilalLogo';
 import { EASE_LUXURY, MagneticAction } from './MotionPrimitives';
 import { buildWhatsappHref, SITE_INFO } from '@/lib/site-data';
@@ -67,22 +67,25 @@ export function Navbar() {
       {/* Floating Awwwards Obsidian-Burgundy Glass Architectural Bar */}
       <div
         className={`pointer-events-auto mx-auto max-w-[1280px] rounded-2xl sm:rounded-full awwwards-nav-shell transition-all duration-300 ${
-          scrolled ? 'py-1.5 sm:py-2 px-3 sm:px-5' : 'py-2 sm:py-2.5 px-3.5 sm:px-6'
+          scrolled ? 'py-1.5 sm:py-2 px-3 sm:px-4 lg:px-5' : 'py-2 sm:py-2.5 px-3 sm:px-5 lg:px-6'
         }`}
       >
-        <div className="flex items-center justify-between gap-4 lg:gap-8">
-          {/* Zone 1: Brand Wordmark */}
+        <div className="flex items-center justify-between gap-2 lg:gap-3 xl:gap-6 min-w-0">
+          {/* Zone 1: Brand Wordmark (True Intrinsic Responsive Sizing — Zero Scale Overflow) */}
           <Link
             href="/#hero"
             onClick={(e) => handleNavClick(e, 'hero')}
             aria-label="Hilal Tesisat Ana Sayfa"
-            className="whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E9D1C0] rounded-md scale-[0.82] origin-left sm:scale-[0.94]"
+            className="whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E9D1C0] rounded-md"
           >
-            <HilalLogo variant="light" />
+            <HilalLogo variant="light" compact />
           </Link>
 
           {/* Zone 2: Single-Page Editorial Navigation with Active Champagne Glide */}
-          <nav aria-label="Ana Menü" className="hidden lg:flex items-center gap-1.5">
+          <nav
+            aria-label="Ana Menü"
+            className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 min-w-0"
+          >
             {NAV_ITEMS.map((item) => {
               const isActive = pathname === '/' && activeSection === item.id;
               return (
@@ -90,7 +93,7 @@ export function Navbar() {
                   key={item.id}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.id)}
-                  className={`relative px-3 py-1.5 text-[13px] font-medium whitespace-nowrap shrink-0 rounded-full transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E9D1C0] ${
+                  className={`relative px-2.5 xl:px-3 py-1.5 text-[12px] xl:text-[13px] font-medium whitespace-nowrap shrink-0 rounded-full transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E9D1C0] ${
                     isActive
                       ? 'text-[#660D1C]'
                       : 'text-[#F2E3DB] hover:text-white'
@@ -109,13 +112,25 @@ export function Navbar() {
             })}
           </nav>
 
-          {/* Zone 3: Single Primary Action + Mobile Drawer Trigger */}
-          <div className="flex items-center gap-2 shrink-0">
+          {/* Zone 3: Quick Location Pin + Primary Action + Mobile Drawer Trigger */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <Link
+              href="/#konum-harita"
+              onClick={(e) => handleNavClick(e, 'konum-harita')}
+              aria-label={`Konum ve Yol Tarifi: ${SITE_INFO.fullAddress}`}
+              title={`Merkez Konum: ${SITE_INFO.fullAddress}`}
+              className="hidden sm:inline-flex items-center justify-center gap-1 rounded-full bg-white/10 hover:bg-white/20 border border-[#C8A287]/40 px-2.5 xl:px-3 py-1.5 xl:py-2 text-[11px] font-medium text-[#FAF5F0] whitespace-nowrap shrink-0 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E9D1C0]"
+            >
+              <MapPin className="w-3.5 h-3.5 text-[#86EFAC] shrink-0" aria-hidden="true" />
+              <span className="hidden md:inline lg:hidden xl:inline 2xl:hidden">Konum</span>
+              <span className="hidden 2xl:inline">Pursaklar · Konum</span>
+            </Link>
+
             <MagneticAction strength={7}>
               <Link
                 href="/#iletisim"
                 onClick={(e) => handleNavClick(e, 'iletisim')}
-                className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#FAF4EE] to-[#EED9C8] hover:from-white hover:to-[#F4E3D6] px-3.5 py-1.5 sm:px-4.5 sm:py-2 text-[11px] sm:text-[12.5px] font-semibold text-[#660D1C] shadow-md whitespace-nowrap shrink-0 transition-transform duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E9D1C0]"
+                className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#FAF4EE] to-[#EED9C8] hover:from-white hover:to-[#F4E3D6] px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-[12px] xl:text-[12.5px] font-semibold text-[#660D1C] shadow-md whitespace-nowrap shrink-0 transition-transform duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E9D1C0]"
               >
                 <span>Teklif Al</span>
                 <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
@@ -127,7 +142,7 @@ export function Navbar() {
               aria-label={mobileOpen ? 'Menüyü kapat' : 'Menüyü aç'}
               aria-expanded={mobileOpen}
               onClick={() => setMobileOpen((prev) => !prev)}
-              className="lg:hidden inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-white/20 border border-[#C8A287]/40 text-[#FAF5F0] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E9D1C0]"
+              className="lg:hidden inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-white/20 border border-[#C8A287]/40 text-[#FAF5F0] shrink-0 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E9D1C0]"
             >
               {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
@@ -164,6 +179,30 @@ export function Navbar() {
                 );
               })}
             </nav>
+
+            <a
+              href={SITE_INFO.googleMapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center justify-between gap-2 rounded-xl bg-white/10 hover:bg-white/15 border border-[#86EFAC]/35 px-3 py-2 text-left transition-colors"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <MapPin className="w-3.5 h-3.5 text-[#86EFAC] shrink-0" aria-hidden="true" />
+                <div className="min-w-0">
+                  <div className="text-[11px] font-semibold text-white truncate">
+                    {SITE_INFO.addressLine1}
+                  </div>
+                  <div className="text-[10px] text-[#E9D1C0] truncate">
+                    {SITE_INFO.addressLine2}
+                  </div>
+                </div>
+              </div>
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#16A34A] px-2.5 py-1 text-[10px] font-semibold text-white shrink-0">
+                <Navigation className="w-2.5 h-2.5" aria-hidden="true" />
+                <span>Yol Tarifi</span>
+              </span>
+            </a>
 
             <div className="grid grid-cols-2 gap-2 pt-1 border-t border-white/12">
               <a

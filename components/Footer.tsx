@@ -188,6 +188,9 @@ export function Footer() {
                     {SITE_INFO.addressLine1}
                     <br />
                     {SITE_INFO.addressLine2}
+                    <span className="mt-0.5 block text-[11px] font-semibold text-[#15803D]">
+                      Google Haritalar’da Yol Tarifi →
+                    </span>
                   </span>
                 </a>
               </li>

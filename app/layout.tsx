@@ -11,6 +11,8 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { CookieConsent } from '@/components/CookieConsent';
 import { FloatingContactActions } from '@/components/FloatingContactActions';
+import { FloatingLiveLocationMap } from '@/components/FloatingLiveLocationMap';
+import { LocationProvider } from '@/components/LocationProvider';
 
 const displayFont = Cormorant_Garamond({
   subsets: ['latin', 'latin-ext'],
@@ -67,12 +69,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
         <MotionShell>
-          <ScrollProgressBar />
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <CookieConsent />
-          <FloatingContactActions />
+          <LocationProvider>
+            <ScrollProgressBar />
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <CookieConsent />
+            <FloatingLiveLocationMap />
+            <FloatingContactActions />
+          </LocationProvider>
         </MotionShell>
       </body>
     </html>

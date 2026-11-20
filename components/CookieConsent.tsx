@@ -38,7 +38,7 @@ export function CookieConsent() {
   return (
     <aside
       aria-label="Çerez Tercihleri"
-      className="fixed bottom-[72px] left-3 right-3 sm:right-auto sm:left-5 sm:bottom-5 sm:max-w-xs z-40 rounded-xl bg-[#5C0B1A]/95 text-[#F8F5F2] border border-[#E5C1A8]/35 px-3 py-2.5 shadow-2xl backdrop-blur-md"
+      className="fixed bottom-[120px] left-3 right-3 sm:bottom-5 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:max-w-xs z-40 rounded-xl bg-[#5C0B1A]/95 text-[#F8F5F2] border border-[#E5C1A8]/35 px-3 py-2.5 shadow-2xl backdrop-blur-md"
     >
       <div className="flex items-start gap-2">
         <ShieldCheck className="w-3.5 h-3.5 text-[#E5C1A8] shrink-0 mt-0.5" aria-hidden="true" />
