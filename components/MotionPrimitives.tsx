@@ -71,7 +71,7 @@ export function ArchitecturalMaskReveal({
   className?: string;
 }) {
   return (
-    <div className={`overflow-hidden ${className}`}>
+    <div className={`overflow-hidden pb-2 -mb-2 ${className}`}>
       <motion.div
         initial={{ y: '18%', opacity: 1 }}
         animate={{ y: '0%', opacity: 1 }}

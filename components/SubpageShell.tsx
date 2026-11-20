@@ -1,9 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, ChevronRight, Mail, MapPin, Phone } from 'lucide-react';
-import { SITE_IMAGES, SITE_INFO } from '@/lib/site-data';
+import { ArrowRight, ChevronRight, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
+import { buildWhatsappHref, SITE_IMAGES, SITE_INFO } from '@/lib/site-data';
 import { buildBreadcrumbJsonLd } from '@/lib/seo';
 import { SafeImage } from './SafeImage';
+import { ArchitecturalMaskReveal, SilkRibbonParallax } from './MotionPrimitives';
 
 interface SubpageShellProps {
   eyebrow: string;
@@ -49,28 +50,12 @@ export function SubpageShell({
         <div className="absolute inset-0 bg-[#EBE7E4]/54" />
       </div>
 
-      {/* Subtle Structural Silk Hairlines */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <svg viewBox="0 0 1440 2400" preserveAspectRatio="none" className="w-full h-full opacity-60">
-          <path
-            d="M-80,520 C360,410 880,690 1520,540"
-            fill="none"
-            stroke="#C8A287"
-            strokeWidth="1.8"
-          />
-          <path
-            d="M-80,1260 C420,1410 980,1120 1520,1290"
-            fill="none"
-            stroke="#C8A287"
-            strokeWidth="1.6"
-          />
-          <path
-            d="M-80,1920 C390,1780 1010,2060 1520,1880"
-            fill="none"
-            stroke="#C8A287"
-            strokeWidth="1.8"
-          />
-        </svg>
+      {/* Scroll-Driven Structural Silk Hairlines Positioned Strictly Below Hero Typography */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-[460px] sm:top-[520px] bottom-0 z-0 overflow-hidden"
+      >
+        <SilkRibbonParallax className="w-full h-full opacity-45" />
       </div>
 
       {/* Architectural Split Subpage Hero */}
@@ -118,9 +103,11 @@ export function SubpageShell({
                   {eyebrow}
                 </span>
               </div>
-              <h1 className="font-display text-3xl sm:text-5xl lg:text-[54px] font-semibold leading-[1.06] tracking-[-0.015em] text-[#1D1716] text-balance">
-                {title}
-              </h1>
+              <ArchitecturalMaskReveal>
+                <h1 className="font-display text-3xl sm:text-5xl lg:text-[54px] font-semibold leading-[1.06] tracking-[-0.015em] text-[#1D1716] text-balance">
+                  {title}
+                </h1>
+              </ArchitecturalMaskReveal>
               <p className="text-xs sm:text-base leading-relaxed text-[#453D3B] max-w-2xl">
                 {description}
               </p>
@@ -198,7 +185,7 @@ export function SubpageShell({
                   Doğalgaz projesi, kombi bakımı, ilaçlı petek temizliği ve su kaçağı tespiti için
                   ücretsiz keşif randevusu oluşturun.
                 </p>
-                <div className="pt-1 flex flex-wrap items-center gap-3">
+                <div className="pt-1 flex flex-wrap items-center gap-2.5 sm:gap-3">
                   <Link
                     href="/iletisim"
                     className="inline-flex items-center gap-2 rounded-full bg-[#F8F5F2] text-[#2A060A] px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm font-semibold shadow-lg hover:bg-white transition-transform hover:-translate-y-0.5 whitespace-nowrap"
@@ -206,6 +193,15 @@ export function SubpageShell({
                     <span>Teklif & Keşif Formu</span>
                     <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
                   </Link>
+                  <a
+                    href={buildWhatsappHref()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-[#1C5D36] hover:bg-[#174D2C] border border-white/20 px-4 py-2 sm:px-5 sm:py-3 text-xs sm:text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 whitespace-nowrap"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
+                    <span>WhatsApp</span>
+                  </a>
                   <a
                     href={SITE_INFO.phoneHref}
                     className="inline-flex items-center gap-2 rounded-full border border-[#C8A287]/55 bg-white/10 px-4 py-2 sm:px-5 sm:py-3 text-xs sm:text-sm font-medium text-white hover:bg-white/15 transition-colors tabular-nums whitespace-nowrap"
@@ -251,3 +247,4 @@ export function SubpageShell({
     </div>
   );
 }
+

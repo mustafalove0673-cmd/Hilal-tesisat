@@ -44,7 +44,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const businessSchema = buildLocalBusinessJsonLd();
 
   return (
-    <html lang="tr" className={`${displayFont.variable} ${sansFont.variable}`}>
+    <html
+      lang="tr"
+      data-scroll-behavior="smooth"
+      className={`${displayFont.variable} ${sansFont.variable}`}
+    >
       <body suppressHydrationWarning className="min-h-screen flex flex-col bg-[#EFECE9] text-[#1B1817]">
         <script
           type="application/ld+json"

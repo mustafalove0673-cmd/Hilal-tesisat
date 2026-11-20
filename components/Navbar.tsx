@@ -10,18 +10,17 @@ import { EASE_LUXURY } from './MotionPrimitives';
 import { buildWhatsappHref } from '@/lib/site-data';
 
 const NAV_ITEMS = [
-  { id: 'hero', href: '/#hero', label: 'Ana Sayfa' },
-  { id: 'hizmetler', href: '/#hizmetler', label: 'Hizmetler' },
-  { id: 'projelerimiz', href: '/#projelerimiz', label: 'Projelerimiz' },
-  { id: 'kurumsal', href: '/#kurumsal', label: 'Kurumsal' },
-  { id: 'sss', href: '/#sss', label: 'SSS' },
-  { id: 'iletisim', href: '/#iletisim', label: 'İletişim' },
+  { href: '/', label: 'Ana Sayfa' },
+  { href: '/hizmetler', label: 'Hizmetler' },
+  { href: '/projelerimiz', label: 'Projelerimiz' },
+  { href: '/kurumsal', label: 'Kurumsal' },
+  { href: '/sss', label: 'SSS' },
+  { href: '/iletisim', label: 'İletişim' },
 ];
 
 export function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState('hero');
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -30,39 +29,6 @@ export function Navbar() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
-  useEffect(() => {
-    if (pathname !== '/') return;
-
-    const sectionIds = NAV_ITEMS.map((item) => item.id);
-    const onScrollSpy = () => {
-      const scrollMid = window.scrollY + 140;
-      let current = 'hero';
-      for (const id of sectionIds) {
-        const el = document.getElementById(id);
-        if (el && el.offsetTop <= scrollMid) {
-          current = id;
-        }
-      }
-      setActiveSection(current);
-    };
-
-    onScrollSpy();
-    window.addEventListener('scroll', onScrollSpy, { passive: true });
-    return () => window.removeEventListener('scroll', onScrollSpy);
-  }, [pathname]);
-
-  function handleSectionNav(e: React.MouseEvent<HTMLAnchorElement>, id: string) {
-    setMobileOpen(false);
-    if (pathname === '/') {
-      const target = document.getElementById(id);
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setActiveSection(id);
-      }
-    }
-  }
 
   return (
     <header
@@ -75,24 +41,23 @@ export function Navbar() {
       <div className="mx-auto max-w-[1280px] px-3 sm:px-6 lg:px-8 h-13 sm:h-[70px] flex items-center justify-between gap-4 sm:gap-8">
         {/* Zone 1: Brand Logo */}
         <Link
-          href="/#hero"
-          onClick={(e) => handleSectionNav(e, 'hero')}
+          href="/"
           aria-label="Hilal Tesisat Ana Sayfa"
           className="whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5E1119] rounded-md scale-[0.86] origin-left sm:scale-100"
         >
           <HilalLogo variant="dark" />
         </Link>
 
-        {/* Zone 2: Single-Page Smooth Section Navigation */}
+        {/* Zone 2: Dedicated Multi-Page Navigation */}
         <nav aria-label="Ana Menü" className="hidden lg:flex items-center gap-7">
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname === '/' && activeSection === item.id;
+            const isActive =
+              item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
 
             return (
               <Link
-                key={item.id}
+                key={item.href}
                 href={item.href}
-                onClick={(e) => handleSectionNav(e, item.id)}
                 className={`relative py-2 text-[13.5px] font-medium whitespace-nowrap shrink-0 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5E1119] rounded ${
                   isActive ? 'text-[#36080D]' : 'text-[#4B4543] hover:text-[#36080D]'
                 }`}
@@ -110,11 +75,10 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* Zone 3: Minimalist Teklif Al Primary Action */}
+        {/* Zone 3: Teklif Al Primary Action & Mobile Drawer Trigger */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <Link
-            href="/#iletisim"
-            onClick={(e) => handleSectionNav(e, 'iletisim')}
+            href="/iletisim"
             className="inline-flex items-center gap-1.5 rounded-full burgundy-cta px-3 py-1.5 sm:px-5 sm:py-2 text-[11px] sm:text-[13px] font-medium text-[#FAF7F5] whitespace-nowrap shrink-0 transition-transform duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#5E1119]"
           >
             <span>Teklif Al</span>
@@ -133,7 +97,7 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Compact Mobile Drawer */}
+      {/* Compact Mobile Drawer Routing to Dedicated Pages */}
       <AnimatePresence>
         {mobileOpen ? (
           <motion.div
@@ -145,12 +109,13 @@ export function Navbar() {
           >
             <nav aria-label="Mobil Menü" className="grid grid-cols-2 gap-1.5">
               {NAV_ITEMS.map((item) => {
-                const isActive = pathname === '/' && activeSection === item.id;
+                const isActive =
+                  item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
                 return (
                   <Link
-                    key={item.id}
+                    key={item.href}
                     href={item.href}
-                    onClick={(e) => handleSectionNav(e, item.id)}
+                    onClick={() => setMobileOpen(false)}
                     className={`px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                       isActive
                         ? 'bg-[#4A0D13] text-white'

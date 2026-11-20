@@ -2,35 +2,23 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { ArrowRight, CheckCircle2, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { HilalLogo } from './HilalLogo';
 import { buildWhatsappHref, SITE_INFO } from '@/lib/site-data';
 
-const QUICK_SECTIONS = [
-  { id: 'hero', href: '/#hero', label: 'Ana Sayfa' },
-  { id: 'hizmetler', href: '/#hizmetler', label: 'Hizmetler' },
-  { id: 'projelerimiz', href: '/#projelerimiz', label: 'Projelerimiz' },
-  { id: 'kurumsal', href: '/#kurumsal', label: 'Kurumsal' },
-  { id: 'sss', href: '/#sss', label: 'SSS' },
-  { id: 'iletisim', href: '/#iletisim', label: 'İletişim' },
+const QUICK_ROUTES = [
+  { href: '/', label: 'Ana Sayfa' },
+  { href: '/hizmetler', label: 'Hizmetler' },
+  { href: '/projelerimiz', label: 'Projelerimiz' },
+  { href: '/kurumsal', label: 'Kurumsal' },
+  { href: '/sss', label: 'SSS' },
+  { href: '/iletisim', label: 'İletişim' },
 ];
 
 export function Footer() {
-  const pathname = usePathname();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [feedback, setFeedback] = useState('');
-
-  function handleSectionNav(e: React.MouseEvent<HTMLAnchorElement>, id: string) {
-    if (pathname === '/') {
-      const target = document.getElementById(id);
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-  }
 
   async function handleNewsletterSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -98,11 +86,7 @@ export function Footer() {
         <div className="grid grid-cols-2 lg:grid-cols-12 gap-6 sm:gap-10">
           {/* Column 1: Brand */}
           <div className="col-span-2 lg:col-span-4 space-y-2.5 sm:space-y-4">
-            <Link
-              href="/#hero"
-              onClick={(e) => handleSectionNav(e, 'hero')}
-              className="inline-block scale-90 sm:scale-100 origin-left"
-            >
+            <Link href="/" className="inline-block scale-90 sm:scale-100 origin-left">
               <HilalLogo variant="dark" showTagline />
             </Link>
             <p className="text-[11px] sm:text-sm leading-relaxed text-[#57504D] max-w-xs">
@@ -111,19 +95,15 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Column 2: Quick Links (Single-Page Sections) */}
+          {/* Column 2: Quick Links (Dedicated Pages) */}
           <div className="col-span-1 lg:col-span-2">
             <h3 className="font-display text-base sm:text-lg font-semibold text-[#23191A] mb-2.5 sm:mb-4">
               Hızlı Erişim
             </h3>
             <ul className="space-y-1.5 sm:space-y-2.5 text-xs sm:text-sm text-[#4D4644]">
-              {QUICK_SECTIONS.map((item) => (
-                <li key={item.id}>
-                  <Link
-                    href={item.href}
-                    onClick={(e) => handleSectionNav(e, item.id)}
-                    className="hover:text-[#4A0D13] transition-colors"
-                  >
+              {QUICK_ROUTES.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="hover:text-[#4A0D13] transition-colors">
                     {item.label}
                   </Link>
                 </li>
@@ -201,6 +181,7 @@ export function Footer() {
                 <input
                   id="footer-newsletter-email"
                   type="email"
+                  suppressHydrationWarning
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="E-posta adresiniz"
