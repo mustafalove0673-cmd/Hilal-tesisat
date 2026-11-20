@@ -8,7 +8,7 @@ type ZoomPreset = 'street' | 'district' | 'city';
 type MapLayer = 'm' | 'k';
 
 const ZOOM_PRESETS: Record<ZoomPreset, { label: string; zoom: number }> = {
-  street: { label: 'Sokak', zoom: 17 },
+  street: { label: 'Sokak', zoom: 16 },
   district: { label: 'Pursaklar', zoom: 14 },
   city: { label: 'Ankara', zoom: 11 },
 };
@@ -37,29 +37,30 @@ export function LiveLocationMap() {
   }
 
   return (
-    <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-br from-[#0A2C1D] via-[#134A31] to-[#082217] border border-[#6EE7B7]/35 shadow-[0_26px_60px_-22px_rgba(6,38,24,0.62)]">
-      {/* Top Emerald Luxury Control Bar */}
-      <div className="px-4 py-3.5 sm:px-6 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[#86EFAC]/18 text-[#F0FDF4]">
+    <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white/95 backdrop-blur-md border border-[#E5DCD5] shadow-[0_24px_60px_-28px_rgba(38,16,20,0.16)]">
+      {/* Clean Light Header Bar with Fresh Green Live-Location Accent */}
+      <div className="px-4 py-3.5 sm:px-6 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[#EFE8E2] bg-white/95">
         <div className="flex items-center gap-3 min-w-0">
-          <span className="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#16A34A]/25 border border-[#86EFAC]/45 text-[#A7F3D0] shrink-0">
+          <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-[#ECFDF5] border border-[#BBF7D0] text-[#15803D] shrink-0">
             <MapPin className="w-4 h-4" aria-hidden="true" />
           </span>
           <div className="min-w-0">
-            <div className="text-[11px] font-medium text-[#A7F3D0]">
-              Google Haritalar · Canlı Merkez Servis Konumu
+            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#15803D]">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#22C55E]" aria-hidden="true" />
+              <span>Canlı Konum · Google Haritalar</span>
             </div>
-            <div className="text-xs sm:text-sm font-semibold text-white truncate">
+            <div className="text-xs sm:text-sm font-semibold text-[#1F1716] truncate">
               {SITE_INFO.fullAddress}
             </div>
           </div>
         </div>
 
-        {/* Interactive Google Maps Layer & Zoom Controls */}
+        {/* Clean Segmented Layer & Zoom Controls */}
         <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
           <div
             role="group"
             aria-label="Harita görünüm türü"
-            className="inline-flex items-center gap-0.5 rounded-xl bg-[#051B11]/65 p-1 border border-[#86EFAC]/20"
+            className="inline-flex items-center gap-0.5 rounded-xl bg-[#F4EFEA] p-1 border border-[#E7DDD5]"
           >
             <button
               type="button"
@@ -67,8 +68,8 @@ export function LiveLocationMap() {
               aria-pressed={mapLayer === 'm'}
               className={`inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold rounded-lg whitespace-nowrap transition-colors ${
                 mapLayer === 'm'
-                  ? 'bg-[#22C55E] text-[#042314] shadow-sm'
-                  : 'text-[#C6F6D5] hover:text-white'
+                  ? 'bg-white text-[#15803D] shadow-sm'
+                  : 'text-[#6B5D58] hover:text-[#1F1716]'
               }`}
             >
               <Layers className="w-3 h-3" aria-hidden="true" />
@@ -80,8 +81,8 @@ export function LiveLocationMap() {
               aria-pressed={mapLayer === 'k'}
               className={`px-2.5 py-1 text-[11px] font-semibold rounded-lg whitespace-nowrap transition-colors ${
                 mapLayer === 'k'
-                  ? 'bg-[#22C55E] text-[#042314] shadow-sm'
-                  : 'text-[#C6F6D5] hover:text-white'
+                  ? 'bg-white text-[#15803D] shadow-sm'
+                  : 'text-[#6B5D58] hover:text-[#1F1716]'
               }`}
             >
               Uydu
@@ -91,7 +92,7 @@ export function LiveLocationMap() {
           <div
             role="group"
             aria-label="Harita yakınlaştırma seviyesi"
-            className="inline-flex items-center gap-0.5 rounded-xl bg-[#051B11]/65 p-1 border border-[#86EFAC]/20"
+            className="inline-flex items-center gap-0.5 rounded-xl bg-[#F4EFEA] p-1 border border-[#E7DDD5]"
           >
             {(Object.keys(ZOOM_PRESETS) as ZoomPreset[]).map((key) => {
               const active = zoomKey === key;
@@ -103,8 +104,8 @@ export function LiveLocationMap() {
                   aria-pressed={active}
                   className={`px-2.5 py-1 text-[11px] font-semibold rounded-lg whitespace-nowrap transition-colors ${
                     active
-                      ? 'bg-[#22C55E] text-[#042314] shadow-sm'
-                      : 'text-[#C6F6D5] hover:text-white'
+                      ? 'bg-white text-[#15803D] shadow-sm'
+                      : 'text-[#6B5D58] hover:text-[#1F1716]'
                   }`}
                 >
                   {ZOOM_PRESETS[key].label}
@@ -115,8 +116,8 @@ export function LiveLocationMap() {
         </div>
       </div>
 
-      {/* Real Google Maps Live Interactive Viewport with Crisp Emerald Framing */}
-      <div className="relative h-[290px] sm:h-[360px] w-full bg-[#0C261A]">
+      {/* Pure Bright True-Color Google Maps Interactive Viewport */}
+      <div className="relative h-[320px] sm:h-[400px] w-full bg-[#EEF4EE]">
         <iframe
           key={`${mapLayer}-${zoom}`}
           title="Hilal Tesisat Google Haritalar Canlı Konumu - Saray Cumhuriyet, Edebali Sk. 7 B, Pursaklar/Ankara"
@@ -124,20 +125,16 @@ export function LiveLocationMap() {
           loading="lazy"
           allowFullScreen
           referrerPolicy="no-referrer-when-downgrade"
-          className="w-full h-full border-0 saturate-[1.08] contrast-[1.02]"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-[#6EE7B7]/25"
+          className="w-full h-full border-0"
         />
       </div>
 
-      {/* Integrated Non-Overlapping Emerald Bottom Address & Directions Bar */}
-      <div className="px-4 py-3.5 sm:px-6 border-t border-[#86EFAC]/20 bg-[#082418]/95 text-[#F0FDF4] flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+      {/* Clean Light Address & Directions Footer Bar */}
+      <div className="px-4 py-3.5 sm:px-6 border-t border-[#EFE8E2] bg-[#FAF7F4] flex flex-col lg:flex-row lg:items-center justify-between gap-3">
         <div className="flex items-center justify-between sm:justify-start gap-3 min-w-0">
           <div className="min-w-0">
-            <div className="text-[10.5px] font-medium text-[#86EFAC]">Hilal Tesisat Merkez</div>
-            <div className="text-xs sm:text-[13px] font-semibold text-white leading-snug">
+            <div className="text-[10.5px] font-medium text-[#7A6B65]">Hilal Tesisat Merkez</div>
+            <div className="text-xs sm:text-[13px] font-semibold text-[#1F1716] leading-snug">
               {SITE_INFO.addressLine1}, {SITE_INFO.addressLine2}
             </div>
           </div>
@@ -145,11 +142,11 @@ export function LiveLocationMap() {
             type="button"
             onClick={handleCopyAddress}
             aria-label="Adresi kopyala"
-            className="inline-flex items-center gap-1 rounded-lg bg-[#16A34A]/20 hover:bg-[#16A34A]/35 border border-[#86EFAC]/30 px-2.5 py-1.5 text-[11px] font-medium text-[#DCFCE7] shrink-0 transition-colors"
+            className="inline-flex items-center gap-1 rounded-lg bg-white hover:bg-[#ECFDF5] border border-[#E4DAD2] hover:border-[#86EFAC] px-2.5 py-1.5 text-[11px] font-medium text-[#3B2E2A] hover:text-[#15803D] shrink-0 transition-colors"
           >
             {copied ? (
               <>
-                <Check className="w-3 h-3 text-[#4ADE80]" aria-hidden="true" />
+                <Check className="w-3 h-3 text-[#16A34A]" aria-hidden="true" />
                 <span>Kopyalandı</span>
               </>
             ) : (
@@ -166,18 +163,18 @@ export function LiveLocationMap() {
             href={SITE_INFO.googleMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#22C55E] to-[#16A34A] hover:from-[#4ADE80] hover:to-[#22C55E] text-[#042314] px-4 py-2 text-xs font-bold shadow-md transition-transform hover:-translate-y-0.5 whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white px-4 py-2 text-xs font-semibold shadow-sm transition-transform hover:-translate-y-0.5 whitespace-nowrap"
           >
             <Navigation className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Google Haritalar’da Yol Tarifi</span>
-            <ExternalLink className="w-3 h-3 opacity-80" aria-hidden="true" />
+            <ExternalLink className="w-3 h-3 opacity-85" aria-hidden="true" />
           </a>
 
           <a
             href={SITE_INFO.phoneHref}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[#16A34A]/20 hover:bg-[#16A34A]/35 border border-[#86EFAC]/35 px-3.5 py-2 text-xs font-semibold text-[#ECFDF5] tabular-nums whitespace-nowrap transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full bg-white hover:bg-[#FAF4EE] border border-[#E4DAD2] px-3.5 py-2 text-xs font-semibold text-[#7D1225] tabular-nums whitespace-nowrap transition-colors"
           >
-            <Phone className="w-3.5 h-3.5 text-[#86EFAC]" aria-hidden="true" />
+            <Phone className="w-3.5 h-3.5 text-[#9E152E]" aria-hidden="true" />
             <span>{SITE_INFO.phoneDisplay}</span>
           </a>
         </div>
